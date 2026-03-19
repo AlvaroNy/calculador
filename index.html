@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PriceIQ — Calculadora de Precificação para Marketplaces</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0f1a; --bg2: #111624; --bg3: #161d2e;
+    --card: #1a2235; --card2: #1f2940;
+    --border: #2a3550; --border2: #35446a;
+    --accent: #4f8aff; --accent2: #7b5ea7; --accent3: #00d4aa;
+    --accent-glow: rgba(79,138,255,0.15);
+    --text: #e8edf8; --text2: #8fa4c8; --text3: #5a6e90;
+    --green: #00d4aa; --red: #ff5470; --yellow: #ffb830; --orange: #ff7c4d;
+    --shopee: #f5793b; --tiktok: #ff004f;
+    --radius: 14px; --radius-sm: 8px;
+    --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  body::before { content:''; position:fixed; top:-200px; left:-200px; width:700px; height:700px; background:radial-gradient(circle,rgba(79,138,255,0.07) 0%,transparent 70%); pointer-events:none; z-index:0; }
+  body::after  { content:''; position:fixed; bottom:-200px; right:-200px; width:600px; height:600px; background:radial-gradient(circle,rgba(0,212,170,0.06) 0%,transparent 70%); pointer-events:none; z-index:0; }
+
+  header { position:sticky; top:0; z-index:100; background:rgba(11,15,26,0.85); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:0 24px; }
+  .header-inner { max-width:1280px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:64px; }
+  .logo { display:flex; align-items:center; gap:10px; font-family:'Syne',sans-serif; font-size:20px; font-weight:800; letter-spacing:-0.5px; color:var(--text); }
+  .logo-icon { width:32px; height:32px; background:linear-gradient(135deg,var(--accent),var(--accent3)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .logo span { color:var(--accent); }
+  .header-badge { background:var(--accent-glow); border:1px solid rgba(79,138,255,0.3); color:var(--accent); font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; letter-spacing:0.5px; }
+  .live-dot { width:7px; height:7px; background:var(--green); border-radius:50%; box-shadow:0 0 0 2px rgba(0,212,170,0.25); animation:pulse-green 2s infinite; }
+  @keyframes pulse-green { 0%,100%{ box-shadow:0 0 0 2px rgba(0,212,170,0.25); } 50%{ box-shadow:0 0 0 5px rgba(0,212,170,0.1); } }
+
+  .hero { text-align:center; padding:56px 24px 32px; position:relative; z-index:1; }
+  .hero-tag { display:inline-flex; align-items:center; gap:6px; background:rgba(79,138,255,0.1); border:1px solid rgba(79,138,255,0.25); color:var(--accent); font-size:12px; font-weight:600; letter-spacing:0.8px; padding:5px 14px; border-radius:20px; margin-bottom:20px; text-transform:uppercase; }
+  .hero-tag::before { content:'⚡'; }
+  .hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,5vw,52px); font-weight:800; line-height:1.1; letter-spacing:-1.5px; margin-bottom:14px; }
+  .hero h1 em { font-style:normal; background:linear-gradient(90deg,var(--accent),var(--accent3)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .hero p { color:var(--text2); font-size:16px; max-width:480px; margin:0 auto; line-height:1.6; }
+
+  .app-layout { max-width:1280px; margin:0 auto; padding:0 20px 60px; position:relative; z-index:1; }
+
+  .tabs { display:flex; gap:4px; background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:4px; margin-bottom:28px; overflow-x:auto; scrollbar-width:none; }
+  .tabs::-webkit-scrollbar { display:none; }
+  .tab-btn { flex:1; min-width:120px; padding:9px 16px; border:none; cursor:pointer; background:transparent; color:var(--text3); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; border-radius:9px; transition:all 0.2s; white-space:nowrap; display:flex; align-items:center; justify-content:center; gap:6px; }
+  .tab-btn:hover { color:var(--text2); background:var(--bg3); }
+  .tab-btn.active { background:var(--card2); color:var(--text); box-shadow:0 2px 8px rgba(0,0,0,0.3); }
+
+  .main-grid { display:grid; grid-template-columns:400px 1fr; gap:20px; align-items:start; }
+  @media(max-width:900px){ .main-grid{ grid-template-columns:1fr; } }
+
+  .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:24px; }
+  .card-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.3px; color:var(--text2); text-transform:uppercase; margin-bottom:20px; display:flex; align-items:center; gap:8px; }
+  .card-title::before { content:''; display:block; width:3px; height:14px; background:linear-gradient(to bottom,var(--accent),var(--accent3)); border-radius:2px; }
+
+  .marketplace-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:24px; }
+  .mp-btn { padding:12px 10px; border:1.5px solid var(--border); border-radius:10px; background:var(--bg3); cursor:pointer; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:5px; font-family:'DM Sans',sans-serif; color:var(--text2); font-size:12px; font-weight:600; position:relative; overflow:hidden; }
+  .mp-btn:hover { border-color:var(--border2); color:var(--text); transform:translateY(-1px); }
+  .mp-btn.active { border-color:var(--accent); color:var(--text); background:var(--accent-glow); }
+  .mp-btn.active::after { content:'✓'; position:absolute; top:6px; right:8px; font-size:10px; color:var(--accent); }
+  .mp-logo { font-size:22px; }
+  .mp-rate { font-size:10px; color:var(--text3); font-weight:400; }
+  .mp-btn.active .mp-rate { color:var(--accent2); }
+
+  .form-group { margin-bottom:16px; }
+  .form-label { display:flex; align-items:center; justify-content:space-between; font-size:12px; font-weight:600; color:var(--text3); letter-spacing:0.3px; margin-bottom:7px; text-transform:uppercase; }
+  .form-label .tooltip { cursor:help; color:var(--text3); font-size:11px; border:1px solid var(--border2); border-radius:50%; width:16px; height:16px; display:flex; align-items:center; justify-content:center; font-weight:700; transition:0.2s; text-transform:none; }
+  .form-label .tooltip:hover { border-color:var(--accent); color:var(--accent); }
+  .input-wrap { position:relative; }
+  .input-prefix { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text3); font-size:13px; font-weight:500; pointer-events:none; }
+  .input-suffix { position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text3); font-size:13px; pointer-events:none; }
+  input[type="number"],input[type="text"] { width:100%; background:var(--bg2); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:11px 40px 11px 32px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:500; transition:0.2s; outline:none; -moz-appearance:textfield; }
+  input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance:none; }
+  input[type="number"]:focus,input[type="text"]:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(79,138,255,0.12); }
+  .no-prefix { padding-left:14px!important; }
+  .no-suffix { padding-right:14px!important; }
+
+  .range-wrap { display:flex; flex-direction:column; gap:6px; }
+  .range-display { display:flex; align-items:center; justify-content:space-between; }
+  .range-val { font-size:22px; font-weight:700; font-family:'Syne',sans-serif; color:var(--accent); }
+  .range-val span { font-size:13px; color:var(--text3); font-family:'DM Sans',sans-serif; }
+  input[type="range"] { -webkit-appearance:none; width:100%; height:4px; border-radius:4px; background:var(--border); outline:none; cursor:pointer; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px rgba(79,138,255,0.2); cursor:pointer; transition:0.15s; }
+  input[type="range"]::-webkit-slider-thumb:hover { transform:scale(1.2); box-shadow:0 0 0 5px rgba(79,138,255,0.25); }
+
+  .divider { height:1px; background:var(--border); margin:20px 0; }
+
+  .result-panel { display:flex; flex-direction:column; gap:16px; }
+  .result-hero { background:linear-gradient(135deg,var(--card2),var(--card)); border:1px solid var(--border2); border-radius:var(--radius); padding:28px; position:relative; overflow:hidden; }
+  .result-hero::before { content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px; background:radial-gradient(circle,rgba(79,138,255,0.12) 0%,transparent 70%); }
+  .result-hero-label { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text3); margin-bottom:10px; }
+  .result-price { font-family:'Syne',sans-serif; font-size:clamp(36px,5vw,52px); font-weight:800; letter-spacing:-2px; line-height:1; color:var(--text); margin-bottom:8px; }
+  .result-price .currency { font-size:0.45em; vertical-align:super; color:var(--text2); }
+  .result-sub { font-size:13px; color:var(--text3); display:flex; align-items:center; gap:8px; }
+  .profit-badge { display:inline-flex; align-items:center; gap:4px; background:rgba(0,212,170,0.12); border:1px solid rgba(0,212,170,0.3); color:var(--green); font-size:12px; font-weight:700; padding:3px 10px; border-radius:20px; }
+
+  .breakdown-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 24px; }
+  .breakdown-title { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text3); margin-bottom:16px; }
+  .breakdown-list { display:flex; flex-direction:column; gap:2px; }
+  .breakdown-item { display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid rgba(42,53,80,0.5); font-size:14px; }
+  .breakdown-item:last-child { border-bottom:none; }
+  .breakdown-item.total { border-top:1px solid var(--border2); border-bottom:none; padding-top:14px; margin-top:8px; font-weight:700; font-size:15px; }
+  .bi-label { color:var(--text2); display:flex; align-items:center; gap:8px; }
+  .bi-dot { width:6px; height:6px; border-radius:50%; background:var(--border2); flex-shrink:0; }
+  .bi-dot.red    { background:var(--red); }
+  .bi-dot.green  { background:var(--green); }
+  .bi-dot.yellow { background:var(--yellow); }
+  .bi-dot.blue   { background:var(--accent); }
+  .bi-dot.orange { background:var(--orange); }
+  .bi-value { font-weight:600; font-family:'Syne',sans-serif; font-size:14px; }
+  .bi-value.neg    { color:var(--red); }
+  .bi-value.pos    { color:var(--green); }
+  .bi-value.neutral{ color:var(--text); }
+  .bi-value.orange { color:var(--orange); }
+
+  .margin-bar-wrap { margin-top:16px; }
+  .margin-bar-label { display:flex; justify-content:space-between; font-size:12px; color:var(--text3); margin-bottom:6px; }
+  .margin-bar { height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+  .margin-bar-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--accent),var(--accent3)); transition:width 0.5s cubic-bezier(0.4,0,0.2,1); }
+
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:10px 18px; border:none; cursor:pointer; border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; transition:all 0.18s; text-decoration:none; white-space:nowrap; }
+  .btn-primary { background:var(--accent); color:white; }
+  .btn-primary:hover { background:#6b9fff; transform:translateY(-1px); box-shadow:0 6px 20px rgba(79,138,255,0.3); }
+  .btn-outline { background:transparent; color:var(--text2); border:1px solid var(--border2); }
+  .btn-outline:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-glow); }
+  .btn-ghost { background:var(--bg3); color:var(--text2); border:1px solid var(--border); }
+  .btn-ghost:hover { color:var(--text); border-color:var(--border2); }
+  .btn-sm { padding:7px 13px; font-size:12px; }
+  .btn-lg { padding:13px 24px; font-size:15px; width:100%; }
+  .action-row { display:flex; gap:10px; flex-wrap:wrap; }
+
+  /* REVERSE */
+  .reverse-panel { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:24px; }
+  .reverse-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(255,180,48,0.1); border:1px solid rgba(255,180,48,0.3); color:var(--yellow); font-size:11px; font-weight:700; letter-spacing:0.5px; padding:3px 10px; border-radius:20px; text-transform:uppercase; margin-bottom:14px; }
+  .reverse-badge::before { content:'↩'; }
+  .reverse-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
+  .rev-stat { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:14px; }
+  .rev-stat-label { font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+  .rev-stat-val { font-size:18px; font-weight:700; font-family:'Syne',sans-serif; color:var(--text); }
+  .rev-stat-val.green { color:var(--green); }
+  .rev-stat-val.red   { color:var(--red); }
+
+  /* FAIXAS TABLE */
+  .faixas-wrap { margin-top:14px; background:var(--bg2); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .faixas-header { font-size:11px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:var(--text3); padding:10px 14px 6px; }
+  .faixas-table { width:100%; border-collapse:collapse; font-size:12px; }
+  .faixas-table th { text-align:left; color:var(--text3); font-weight:700; letter-spacing:0.3px; text-transform:uppercase; padding:6px 14px; border-bottom:1px solid var(--border); font-size:10px; }
+  .faixas-table td { padding:7px 14px; color:var(--text2); border-bottom:1px solid rgba(42,53,80,0.4); }
+  .faixas-table tr:last-child td { border-bottom:none; }
+  .faixas-table tr.active-row td { color:var(--shopee); font-weight:700; background:rgba(245,121,59,0.08); }
+
+  /* COMPARATOR */
+  .comparator-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+  .comp-card { background:var(--card); border:2px solid var(--border); border-radius:var(--radius); padding:22px; transition:0.2s; position:relative; overflow:hidden; }
+  .comp-card:hover { border-color:var(--border2); transform:translateY(-2px); }
+  .comp-card.best { border-color:var(--green); }
+  .comp-best-tag { position:absolute; top:12px; right:12px; background:var(--green); color:#000; font-size:9px; font-weight:800; letter-spacing:0.5px; padding:2px 8px; border-radius:20px; text-transform:uppercase; }
+  .comp-mp-name { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:8px; }
+  .comp-mp-rate { font-size:12px; color:var(--text3); margin-bottom:16px; }
+  .comp-price { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; letter-spacing:-1px; margin-bottom:4px; }
+  .comp-profit { font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px; }
+
+  /* ADVANCED */
+  .advanced-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media(max-width:640px){ .advanced-grid{ grid-template-columns:1fr; } }
+  .adv-mp-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px; }
+  .adv-mp-header { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+  .adv-mp-icon { font-size:24px; }
+  .adv-mp-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; }
+  .adv-section-label { font-size:10px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; color:var(--text3); border-top:1px solid var(--border); padding-top:10px; margin:10px 0 8px; }
+  .adv-field { margin-bottom:10px; }
+  .adv-field label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--text3); margin-bottom:5px; display:flex; align-items:center; gap:6px; }
+  .adv-field input { width:100%; background:var(--bg2); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:8px 12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:0.2s; }
+  .adv-field input:focus { border-color:var(--accent); }
+  .adv-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .affiliate-tag { display:inline-flex; align-items:center; background:rgba(255,0,79,0.12); border:1px solid rgba(255,0,79,0.25); color:var(--tiktok); font-size:9px; font-weight:700; padding:1px 6px; border-radius:8px; letter-spacing:0.3px; }
+
+  /* SAVED */
+  .saved-list { display:flex; flex-direction:column; gap:10px; }
+  .saved-item { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:0.2s; }
+  .saved-item:hover { border-color:var(--accent); }
+  .saved-item-info { display:flex; flex-direction:column; gap:3px; }
+  .saved-item-name { font-size:14px; font-weight:600; color:var(--text); }
+  .saved-item-meta { font-size:12px; color:var(--text3); }
+  .saved-item-price { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--accent); }
+  .empty-state { text-align:center; padding:48px; color:var(--text3); font-size:14px; }
+  .empty-state .empty-icon { font-size:40px; margin-bottom:12px; }
+  .saved-item-product { font-size:13px; font-weight:700; color:var(--text); margin-bottom:2px; }
+  .wa-btn { background:none; border:none; cursor:pointer; padding:6px; border-radius:8px; display:flex; align-items:center; justify-content:center; transition:all 0.18s; flex-shrink:0; }
+  .wa-btn:hover { background:rgba(37,211,102,0.12); transform:scale(1.12); }
+
+  .toast { position:fixed; bottom:24px; right:24px; background:var(--card2); border:1px solid var(--border2); border-radius:10px; padding:12px 20px; font-size:13px; font-weight:500; color:var(--text); box-shadow:var(--shadow-lg); transform:translateY(100px); opacity:0; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index:9999; display:flex; align-items:center; gap:8px; }
+  .toast.show { transform:translateY(0); opacity:1; }
+
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+
+  .shopee-color { color:var(--shopee); }
+  .ml-color { color:#e8b600; }
+  .tiktok-color { color:var(--tiktok); }
+
+  @media(max-width:600px){
+    .hero{ padding:32px 16px 20px; } .hero h1{ font-size:26px; }
+    .app-layout{ padding:0 12px 40px; } .card{ padding:18px; }
+    .result-price{ font-size:38px; } .reverse-grid{ grid-template-columns:1fr; }
+    .action-row{ flex-direction:column; } .btn-lg{ width:100%; }
+    .adv-row{ grid-template-columns:1fr; }
+  }
+  ::-webkit-scrollbar{ width:6px; height:6px; }
+  ::-webkit-scrollbar-track{ background:var(--bg); }
+  ::-webkit-scrollbar-thumb{ background:var(--border2); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo"><div class="logo-icon">💰</div>Price<span>IQ</span></div>
+    <div class="header-badge">BETA</div>
+    <div class="header-actions"><div class="live-dot" title="Cálculo em tempo real"></div></div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-tag">Calculadora Profissional</div>
+  <h1>Precifique com <em>inteligência</em><br/>nos marketplaces</h1>
+  <p>Calcule o preço ideal considerando taxas reais, tributos e sua margem de lucro desejada.</p>
+</div>
+
+<div class="app-layout">
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('calculator',this)">⚙️ Calculadora</button>
+    <button class="tab-btn" onclick="switchTab('comparator',this)">📊 Comparador</button>
+    <button class="tab-btn" onclick="switchTab('reverse',this)">↩ Simulação Reversa</button>
+    <button class="tab-btn" onclick="switchTab('advanced',this)">🔧 Modo Avançado</button>
+    <button class="tab-btn" onclick="switchTab('saved',this)">💾 Simulações <span id="saved-count" style="background:var(--accent);color:white;font-size:10px;padding:1px 6px;border-radius:10px;display:none;"></span></button>
+  </div>
+
+  <!-- CALCULADORA -->
+  <div id="tab-calculator" class="tab-content active">
+    <div class="main-grid">
+      <div>
+        <div class="card">
+          <div class="card-title">Marketplace</div>
+          <div class="marketplace-grid">
+            <button class="mp-btn active" onclick="selectMP('shopee',this)">
+              <span class="mp-logo">🛍️</span><span>Shopee</span>
+              <span class="mp-rate">20%/14% + taxa fixa</span>
+            </button>
+            <button class="mp-btn" onclick="selectMP('mercadolivre',this)">
+              <span class="mp-logo">🛒</span><span>Mercado Livre</span>
+              <span class="mp-rate">19% + R$6</span>
+            </button>
+            <button class="mp-btn" onclick="selectMP('tiktok',this)">
+              <span class="mp-logo">🎵</span><span>TikTok Shop</span>
+              <span class="mp-rate">12% + 5% afiliados</span>
+            </button>
+            <button class="mp-btn" onclick="selectMP('shein',this)">
+              <span class="mp-logo">👗</span><span>Shein</span>
+              <span class="mp-rate">16%</span>
+            </button>
+          </div>
+          <div id="mp-info" style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text3);margin-bottom:20px;line-height:1.6;"></div>
+
+          <div class="card-title">Custos do Produto</div>
+          <div class="form-group">
+            <div class="form-label">Nome do produto <span style="color:var(--text3);font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;margin-left:4px;">opcional</span></div>
+            <div class="input-wrap"><input type="text" id="nome_produto" class="no-prefix no-suffix" placeholder="Ex: Camiseta básica branca..." style="padding:11px 14px;"/></div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Custo do produto <div class="tooltip" title="Valor pago pelo produto/fabricação">?</div></div>
+            <div class="input-wrap"><span class="input-prefix">R$</span><input type="number" id="custo_produto" value="50" min="0" step="0.01" oninput="calc()"/></div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Custo de envio <div class="tooltip" title="Frete que você paga ao enviar">?</div></div>
+            <div class="input-wrap"><span class="input-prefix">R$</span><input type="number" id="custo_envio" value="0" min="0" step="0.01" oninput="calc()"/></div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Taxas extras <div class="tooltip" title="Embalagem, mão de obra, operacionais">?</div></div>
+            <div class="input-wrap"><span class="input-prefix">R$</span><input type="number" id="taxas_extras" value="0" min="0" step="0.01" oninput="calc()"/></div>
+          </div>
+          <div class="divider"></div>
+          <div class="form-group">
+            <div class="form-label">Margem de lucro desejada</div>
+            <div class="range-wrap">
+              <div class="range-display">
+                <div class="range-val" id="margem-display">20<span>%</span></div>
+                <span style="font-size:12px;color:var(--text3)">0% — 100%</span>
+              </div>
+              <input type="range" id="margem_lucro" min="0" max="100" value="20" oninput="updateRangeDisplay();calc()"/>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:16px;">
+            <div class="form-label">Alíquota tributária <div class="tooltip" title="% de imposto sobre o valor de venda (Simples ~6%)">?</div></div>
+            <div class="input-wrap"><input type="number" id="aliquota" class="no-prefix" value="6" min="0" max="100" step="0.1" oninput="calc()"/><span class="input-suffix">%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-panel">
+        <div class="result-hero">
+          <div class="result-hero-label">💡 Preço ideal de venda</div>
+          <div class="result-price"><span class="currency">R$</span><span id="res-preco">0,00</span></div>
+          <div class="result-sub">Lucro líquido: <span class="profit-badge" id="res-lucro-badge">▲ R$ 0,00</span></div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-title">📋 Detalhamento completo</div>
+          <div class="breakdown-list">
+            <div class="breakdown-item">
+              <span class="bi-label"><span class="bi-dot"></span>Custo total do produto</span>
+              <span class="bi-value neutral" id="bi-custo">R$ 0,00</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="bi-label"><span class="bi-dot red"></span>Comissão do marketplace</span>
+              <span class="bi-value neg" id="bi-comissao">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item" id="row-taxa-fixa">
+              <span class="bi-label"><span class="bi-dot red"></span><span id="label-taxa-fixa">Taxa fixa</span></span>
+              <span class="bi-value neg" id="bi-taxa-fixa">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item" id="row-afiliados" style="display:none;">
+              <span class="bi-label"><span class="bi-dot orange"></span>Taxa de afiliados</span>
+              <span class="bi-value orange" id="bi-afiliados">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="bi-label"><span class="bi-dot yellow"></span>Impostos</span>
+              <span class="bi-value" style="color:var(--yellow)" id="bi-imposto">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="bi-label"><span class="bi-dot blue"></span>Receita líquida</span>
+              <span class="bi-value pos" id="bi-receita">R$ 0,00</span>
+            </div>
+            <div class="breakdown-item total">
+              <span class="bi-label" style="color:var(--text)">✦ Lucro líquido</span>
+              <span class="bi-value pos" id="bi-lucro">R$ 0,00</span>
+            </div>
+          </div>
+          <div class="margin-bar-wrap">
+            <div class="margin-bar-label"><span>Margem efetiva sobre venda</span><span id="margin-pct">0%</span></div>
+            <div class="margin-bar"><div class="margin-bar-fill" id="margin-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="btn btn-primary btn-lg" onclick="copiarResultado()" style="flex:1">📋 Copiar resultado</button>
+          <button class="btn btn-outline btn-lg" onclick="salvarSimulacao()" style="flex:1">💾 Salvar simulação</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARADOR -->
+  <div id="tab-comparator" class="tab-content">
+    <div style="margin-bottom:20px;">
+      <div class="card" style="padding:20px 24px;">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <span style="font-size:13px;color:var(--text2);font-weight:500;">Usando os dados da calculadora.</span>
+          <span class="btn btn-ghost btn-sm" onclick="switchTab('calculator',document.querySelector('.tab-btn'))">← Editar dados</span>
+        </div>
+      </div>
+    </div>
+    <div class="comparator-grid" id="comparator-grid"></div>
+  </div>
+
+  <!-- SIMULAÇÃO REVERSA -->
+  <div id="tab-reverse" class="tab-content">
+    <div class="main-grid">
+      <div class="reverse-panel">
+        <div class="reverse-badge">Simulação Reversa</div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5;">Digite um preço de venda e descubra quais serão suas taxas e lucro real.</p>
+
+        <div class="form-group">
+          <div class="form-label">Preço de venda <div class="tooltip" title="O preço que você quer praticar">?</div></div>
+          <div class="input-wrap"><span class="input-prefix">R$</span><input type="number" id="rev_preco" value="100" min="0" step="0.01" oninput="calcReverse()"/></div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">Marketplace</div>
+          <div class="marketplace-grid" style="grid-template-columns:1fr 1fr;">
+            <button class="mp-btn active" onclick="selectRevMP('shopee',this)">🛍️ Shopee</button>
+            <button class="mp-btn" onclick="selectRevMP('mercadolivre',this)">🛒 Mercado Livre</button>
+            <button class="mp-btn" onclick="selectRevMP('tiktok',this)">🎵 TikTok Shop</button>
+            <button class="mp-btn" onclick="selectRevMP('shein',this)">👗 Shein</button>
+          </div>
+        </div>
+
+        <!-- Tabela faixas Shopee -->
+        <div id="rev-shopee-faixas" class="faixas-wrap">
+          <div class="faixas-header">📊 Faixas de precificação da Shopee</div>
+          <table class="faixas-table">
+            <thead><tr><th>Faixa de preço</th><th>Comissão</th><th>Taxa fixa</th></tr></thead>
+            <tbody>
+              <tr id="faixa-row-1"><td>Até R$ 79,99</td><td id="ft-com-1">20%</td><td id="ft-fix-1">R$ 4,00</td></tr>
+              <tr id="faixa-row-2"><td>R$ 80 – R$ 99,99</td><td id="ft-com-2">14%</td><td id="ft-fix-2">R$ 16,00</td></tr>
+              <tr id="faixa-row-3"><td>R$ 100 – R$ 199,99</td><td id="ft-com-3">14%</td><td id="ft-fix-3">R$ 20,00</td></tr>
+              <tr id="faixa-row-4"><td>R$ 200 – R$ 499,99</td><td id="ft-com-4">14%</td><td id="ft-fix-4">R$ 26,00</td></tr>
+              <tr id="faixa-row-5"><td>Acima de R$ 500</td><td id="ft-com-5">14%</td><td id="ft-fix-5">R$ 26,00</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p style="font-size:11px;color:var(--text3);margin-top:12px;">* Usa os custos e tributos configurados na Calculadora.</p>
+      </div>
+
+      <div>
+        <div class="breakdown-card" style="margin-bottom:16px;">
+          <div class="breakdown-title">🔍 Análise do Preço</div>
+          <div class="breakdown-list">
+            <div class="breakdown-item">
+              <span class="bi-label"><span class="bi-dot"></span>Preço de venda</span>
+              <span class="bi-value neutral" id="rv-preco">R$ 0,00</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="bi-label"><span class="bi-dot red"></span>Comissão</span>
+              <span class="bi-value neg" id="rv-comissao">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item" id="rv-row-taxa">
+              <span class="bi-label"><span class="bi-dot red"></span><span id="rv-label-taxa">Taxa fixa</span></span>
+              <span class="bi-value neg" id="rv-taxa">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item" id="rv-row-afiliados" style="display:none;">
+              <span class="bi-label"><span class="bi-dot orange"></span>Taxa de afiliados</span>
+              <span class="bi-value orange" id="rv-afiliados">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="bi-label"><span class="bi-dot yellow"></span>Impostos</span>
+              <span class="bi-value" style="color:var(--yellow)" id="rv-imposto">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="bi-label"><span class="bi-dot"></span>Custo total</span>
+              <span class="bi-value neutral" id="rv-custo">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item total">
+              <span class="bi-label" style="color:var(--text)">✦ Lucro líquido</span>
+              <span class="bi-value" id="rv-lucro">R$ 0,00</span>
+            </div>
+          </div>
+        </div>
+        <div class="reverse-grid">
+          <div class="rev-stat"><div class="rev-stat-label">Margem de lucro</div><div class="rev-stat-val" id="rv-margem">0%</div></div>
+          <div class="rev-stat"><div class="rev-stat-label">Total de descontos</div><div class="rev-stat-val red" id="rv-total-desc">R$ 0,00</div></div>
+          <div class="rev-stat"><div class="rev-stat-label">% do preço em taxas</div><div class="rev-stat-val" id="rv-pct-taxas">0%</div></div>
+          <div class="rev-stat"><div class="rev-stat-label">Ponto de equilíbrio</div><div class="rev-stat-val" id="rv-break">R$ 0,00</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODO AVANÇADO -->
+  <div id="tab-advanced" class="tab-content">
+    <div style="margin-bottom:20px;">
+      <div class="card" style="padding:16px 24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <span style="font-size:13px;color:var(--text2);">⚠️ Edite as taxas conforme seus acordos comerciais próprios.</span>
+          <button class="btn btn-ghost btn-sm" onclick="resetAdvanced()">↺ Restaurar padrões</button>
+        </div>
+      </div>
+    </div>
+    <div class="advanced-grid">
+
+      <!-- SHOPEE -->
+      <div class="adv-mp-card">
+        <div class="adv-mp-header">
+          <span class="adv-mp-icon">🛍️</span>
+          <div><div class="adv-mp-title shopee-color">Shopee</div><div style="font-size:11px;color:var(--text3)">5 faixas dinâmicas de comissão e taxa fixa</div></div>
+        </div>
+
+        <div class="adv-section-label" style="border-top:none;padding-top:0;margin-top:0;">Faixa 1 — Até R$ 79,99</div>
+        <div class="adv-row">
+          <div class="adv-field"><label>Comissão (%)</label><input type="number" id="adv-shopee-com1" value="20" min="0" max="100" step="0.1" oninput="saveAdvanced();calc()"/></div>
+          <div class="adv-field"><label>Taxa fixa (R$)</label><input type="number" id="adv-shopee-f1" value="4" min="0" step="0.01" oninput="saveAdvanced();calc()"/></div>
+        </div>
+
+        <div class="adv-section-label">Faixa 2 — R$ 80 a R$ 99,99</div>
+        <div class="adv-row">
+          <div class="adv-field"><label>Comissão (%)</label><input type="number" id="adv-shopee-com2" value="14" min="0" max="100" step="0.1" oninput="saveAdvanced();calc()"/></div>
+          <div class="adv-field"><label>Taxa fixa (R$)</label><input type="number" id="adv-shopee-f2" value="16" min="0" step="0.01" oninput="saveAdvanced();calc()"/></div>
+        </div>
+
+        <div class="adv-section-label">Faixa 3 — R$ 100 a R$ 199,99</div>
+        <div class="adv-row">
+          <div class="adv-field"><label>Comissão (%)</label><input type="number" id="adv-shopee-com3" value="14" min="0" max="100" step="0.1" oninput="saveAdvanced();calc()"/></div>
+          <div class="adv-field"><label>Taxa fixa (R$)</label><input type="number" id="adv-shopee-f3" value="20" min="0" step="0.01" oninput="saveAdvanced();calc()"/></div>
+        </div>
+
+        <div class="adv-section-label">Faixa 4 — R$ 200 a R$ 499,99</div>
+        <div class="adv-row">
+          <div class="adv-field"><label>Comissão (%)</label><input type="number" id="adv-shopee-com4" value="14" min="0" max="100" step="0.1" oninput="saveAdvanced();calc()"/></div>
+          <div class="adv-field"><label>Taxa fixa (R$)</label><input type="number" id="adv-shopee-f4" value="26" min="0" step="0.01" oninput="saveAdvanced();calc()"/></div>
+        </div>
+
+        <div class="adv-section-label">Faixa 5 — Acima de R$ 500</div>
+        <div class="adv-row">
+          <div class="adv-field"><label>Comissão (%)</label><input type="number" id="adv-shopee-com5" value="14" min="0" max="100" step="0.1" oninput="saveAdvanced();calc()"/></div>
+          <div class="adv-field"><label>Taxa fixa (R$)</label><input type="number" id="adv-shopee-f5" value="26" min="0" step="0.01" oninput="saveAdvanced();calc()"/></div>
+        </div>
+      </div>
+
+      <!-- MERCADO LIVRE -->
+      <div class="adv-mp-card">
+        <div class="adv-mp-header">
+          <span class="adv-mp-icon">🛒</span>
+          <div><div class="adv-mp-title ml-color">Mercado Livre</div><div style="font-size:11px;color:var(--text3)">Comissão + taxa fixa</div></div>
+        </div>
+        <div class="adv-field"><label>Comissão (%)</label><input type="number" id="adv-ml-com" value="19" min="0" max="100" step="0.1" oninput="saveAdvanced();calc()"/></div>
+        <div class="adv-field"><label>Taxa fixa (R$)</label><input type="number" id="adv-ml-fixed" value="6" min="0" step="0.01" oninput="saveAdvanced();calc()"/></div>
+      </div>
+
+      <!-- TIKTOK -->
+      <div class="adv-mp-card">
+        <div class="adv-mp-header">
+          <span class="adv-mp-icon">🎵</span>
+          <div><div class="adv-mp-title tiktok-color">TikTok Shop</div><div style="font-size:11px;color:var(--text3)">Comissão base + taxa de afiliados</div></div>
+        </div>
+        <div class="adv-field"><label>Comissão base (%)</label><input type="number" id="adv-tiktok-com" value="12" min="0" max="100" step="0.1" oninput="saveAdvanced();calc()"/></div>
+        <div class="adv-field">
+          <label>Taxa de afiliados (%) <span class="affiliate-tag">Afiliados</span></label>
+          <input type="number" id="adv-tiktok-afl" value="5" min="0" max="100" step="0.1" oninput="saveAdvanced();calc()"/>
+        </div>
+        <div style="background:rgba(255,0,79,0.06);border:1px solid rgba(255,0,79,0.15);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text3);margin-top:4px;">
+          Taxa total efetiva: <strong id="adv-tiktok-total" style="color:var(--tiktok);font-size:14px;">17%</strong> sobre o valor de venda
+        </div>
+      </div>
+
+      <!-- SHEIN -->
+      <div class="adv-mp-card">
+        <div class="adv-mp-header">
+          <span class="adv-mp-icon">👗</span>
+          <div><div class="adv-mp-title" style="color:var(--text)">Shein</div><div style="font-size:11px;color:var(--text3)">Apenas comissão</div></div>
+        </div>
+        <div class="adv-field"><label>Comissão (%)</label><input type="number" id="adv-shein-com" value="16" min="0" max="100" step="0.1" oninput="saveAdvanced();calc()"/></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIMULAÇÕES SALVAS -->
+  <div id="tab-saved" class="tab-content">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+      <span style="font-size:13px;color:var(--text2);">Suas simulações salvas localmente.</span>
+      <button class="btn btn-ghost btn-sm" onclick="clearSaved()">🗑️ Limpar tudo</button>
+    </div>
+    <div id="saved-list" class="saved-list">
+      <div class="empty-state"><div class="empty-icon">💾</div><div>Nenhuma simulação salva ainda.<br/>Calcule e clique em "Salvar simulação".</div></div>
+    </div>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================
+// STATE
+// ============================
+let currentMP = 'shopee';
+let currentRevMP = 'shopee';
+
+let rates = {
+  shopee: {
+    tiers: [
+      { maxPrice: 79.99,    com: 20, fixed: 4  },
+      { maxPrice: 99.99,    com: 14, fixed: 16 },
+      { maxPrice: 199.99,   com: 14, fixed: 20 },
+      { maxPrice: 499.99,   com: 14, fixed: 26 },
+      { maxPrice: Infinity, com: 14, fixed: 26 },
+    ]
+  },
+  mercadolivre: { com: 19, fixed: 6 },
+  tiktok: { com: 12, afl: 5 },
+  shein: { com: 16 }
+};
+
+// ============================
+// HELPERS
+// ============================
+const fmt    = n => n.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const fmtBRL = n => `R$ ${fmt(n)}`;
+const fmtPct = n => `${n.toFixed(1).replace('.',',')}%`;
+const getVal = id => parseFloat(document.getElementById(id).value) || 0;
+const setTxt = (id, txt) => { const el = document.getElementById(id); if(el) el.textContent = txt; };
+
+function showToast(msg, dur=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// ============================
+// SHOPEE TIER
+// ============================
+function getShopeeTier(price) {
+  for (const tier of rates.shopee.tiers)
+    if (price <= tier.maxPrice) return tier;
+  return rates.shopee.tiers[rates.shopee.tiers.length - 1];
+}
+
+function getShopeeTierIndex(price) {
+  for (let i = 0; i < rates.shopee.tiers.length; i++)
+    if (price <= rates.shopee.tiers[i].maxPrice) return i;
+  return rates.shopee.tiers.length - 1;
+}
+
+// ============================
+// FEES
+// ============================
+function getMPFees(mp, price) {
+  switch(mp) {
+    case 'shopee': {
+      const t = getShopeeTier(price);
+      return { com: price*(t.com/100), fixed: t.fixed, afl: 0 };
+    }
+    case 'mercadolivre':
+      return { com: price*(rates.mercadolivre.com/100), fixed: rates.mercadolivre.fixed, afl: 0 };
+    case 'tiktok':
+      return { com: price*(rates.tiktok.com/100), fixed: 0, afl: price*(rates.tiktok.afl/100) };
+    case 'shein':
+      return { com: price*(rates.shein.com/100), fixed: 0, afl: 0 };
+    default:
+      return { com: 0, fixed: 0, afl: 0 };
+  }
+}
+
+// ============================
+// FORWARD PRICE CALC
+// Resolve: price*(1 - comPct - aflPct - taxPct - mPct) = custo + fixed
+// ============================
+function calcIdealPrice(mp, custoTotal, margemPct, aliquotaPct) {
+  const taxPct = aliquotaPct / 100;
+  const mPct   = margemPct   / 100;
+
+  if (mp === 'shopee') {
+    // Iterative convergence (tier depends on final price)
+    let price = custoTotal / Math.max(0.001, 1 - (rates.shopee.tiers[0].com/100) - taxPct - mPct);
+    for (let i = 0; i < 25; i++) {
+      const tier = getShopeeTier(price);
+      const div  = 1 - (tier.com/100) - taxPct - mPct;
+      if (div <= 0) { price = 0; break; }
+      const newPrice = (custoTotal + tier.fixed) / div;
+      if (Math.abs(newPrice - price) < 0.001) { price = newPrice; break; }
+      price = newPrice;
+    }
+    if (price <= 0) return zero();
+    const fees = getMPFees('shopee', price);
+    const imp  = price * taxPct;
+    const rec  = price - fees.com - fees.fixed - imp;
+    return { price, com: fees.com, fixed: fees.fixed, afl: 0, imposto: imp, receita: rec, lucro: rec - custoTotal };
+
+  } else if (mp === 'mercadolivre') {
+    const div = 1 - (rates.mercadolivre.com/100) - taxPct - mPct;
+    if (div <= 0) return zero();
+    const price = (custoTotal + rates.mercadolivre.fixed) / div;
+    const fees  = getMPFees('mercadolivre', price);
+    const imp   = price * taxPct;
+    const rec   = price - fees.com - fees.fixed - imp;
+    return { price, com: fees.com, fixed: fees.fixed, afl: 0, imposto: imp, receita: rec, lucro: rec - custoTotal };
+
+  } else if (mp === 'tiktok') {
+    const totPct = (rates.tiktok.com + rates.tiktok.afl) / 100;
+    const div = 1 - totPct - taxPct - mPct;
+    if (div <= 0) return zero();
+    const price = custoTotal / div;
+    const fees  = getMPFees('tiktok', price);
+    const imp   = price * taxPct;
+    const rec   = price - fees.com - fees.afl - imp;
+    return { price, com: fees.com, fixed: 0, afl: fees.afl, imposto: imp, receita: rec, lucro: rec - custoTotal };
+
+  } else { // shein
+    const div = 1 - (rates.shein.com/100) - taxPct - mPct;
+    if (div <= 0) return zero();
+    const price = custoTotal / div;
+    const fees  = getMPFees('shein', price);
+    const imp   = price * taxPct;
+    const rec   = price - fees.com - imp;
+    return { price, com: fees.com, fixed: 0, afl: 0, imposto: imp, receita: rec, lucro: rec - custoTotal };
+  }
+}
+
+function zero() { return { price:0, com:0, fixed:0, afl:0, imposto:0, receita:0, lucro:0 }; }
+
+// ============================
+// MAIN CALC
+// ============================
+let lastResult = {};
+
+function calc() {
+  const ct = getVal('custo_produto') + getVal('custo_envio') + getVal('taxas_extras');
+  const mg = getVal('margem_lucro');
+  const al = getVal('aliquota');
+  const r  = calcIdealPrice(currentMP, ct, mg, al);
+  lastResult = { ...r, custoTotal: ct, margem: mg, aliquota: al, mp: currentMP };
+
+  setTxt('res-preco', fmt(r.price));
+  const badge = document.getElementById('res-lucro-badge');
+  badge.textContent   = r.lucro >= 0 ? `▲ ${fmtBRL(r.lucro)}` : `▼ ${fmtBRL(Math.abs(r.lucro))}`;
+  badge.style.background  = r.lucro >= 0 ? 'rgba(0,212,170,0.12)' : 'rgba(255,84,112,0.12)';
+  badge.style.borderColor = r.lucro >= 0 ? 'rgba(0,212,170,0.3)'  : 'rgba(255,84,112,0.3)';
+  badge.style.color       = r.lucro >= 0 ? 'var(--green)'         : 'var(--red)';
+
+  setTxt('bi-custo', fmtBRL(ct));
+  setTxt('bi-comissao', `−${fmtBRL(r.com)}`);
+
+  // taxa fixa row
+  const rowTaxa = document.getElementById('row-taxa-fixa');
+  if (currentMP === 'tiktok' || currentMP === 'shein') {
+    rowTaxa.style.display = 'none';
+  } else {
+    rowTaxa.style.display = '';
+    setTxt('label-taxa-fixa', currentMP === 'shopee' ? 'Taxa fixa (por faixa)' : 'Taxa fixa');
+    setTxt('bi-taxa-fixa', `−${fmtBRL(r.fixed)}`);
+  }
+
+  // afiliados row
+  const rowAfl = document.getElementById('row-afiliados');
+  if (currentMP === 'tiktok') {
+    rowAfl.style.display = '';
+    setTxt('bi-afiliados', `−${fmtBRL(r.afl)}`);
+  } else {
+    rowAfl.style.display = 'none';
+  }
+
+  setTxt('bi-imposto', `−${fmtBRL(r.imposto)}`);
+  setTxt('bi-receita', fmtBRL(r.receita));
+  const le = document.getElementById('bi-lucro');
+  le.textContent = fmtBRL(r.lucro);
+  le.className   = `bi-value ${r.lucro >= 0 ? 'pos' : 'neg'}`;
+
+  const eff = r.price > 0 ? (r.lucro / r.price) * 100 : 0;
+  setTxt('margin-pct', fmtPct(eff));
+  document.getElementById('margin-fill').style.width = Math.max(0, Math.min(100, eff)) + '%';
+
+  updateComparator();
+}
+
+// ============================
+// REVERSE CALC
+// ============================
+function calcReverse() {
+  const price = getVal('rev_preco');
+  const ct    = getVal('custo_produto') + getVal('custo_envio') + getVal('taxas_extras');
+  const al    = getVal('aliquota');
+
+  const fees   = getMPFees(currentRevMP, price);
+  const imp    = price * (al / 100);
+  const total  = fees.com + fees.fixed + fees.afl + imp;
+  const receita = price - fees.com - fees.fixed - fees.afl - imp;
+  const lucro  = receita - ct;
+  const margem = price > 0 ? (lucro / price) * 100 : 0;
+  const pctTax = price > 0 ? (total / price) * 100 : 0;
+  const { price: brk } = calcIdealPrice(currentRevMP, ct, 0, al);
+
+  setTxt('rv-preco', fmtBRL(price));
+  setTxt('rv-comissao', `−${fmtBRL(fees.com)}`);
+
+  const rvTaxa = document.getElementById('rv-row-taxa');
+  if (currentRevMP === 'tiktok' || currentRevMP === 'shein') {
+    rvTaxa.style.display = 'none';
+  } else {
+    rvTaxa.style.display = '';
+    setTxt('rv-label-taxa', currentRevMP === 'shopee' ? 'Taxa fixa (por faixa)' : 'Taxa fixa');
+    setTxt('rv-taxa', `−${fmtBRL(fees.fixed)}`);
+  }
+
+  const rvAfl = document.getElementById('rv-row-afiliados');
+  if (currentRevMP === 'tiktok') {
+    rvAfl.style.display = '';
+    setTxt('rv-afiliados', `−${fmtBRL(fees.afl)}`);
+  } else {
+    rvAfl.style.display = 'none';
+  }
+
+  setTxt('rv-imposto', `−${fmtBRL(imp)}`);
+  setTxt('rv-custo',   `−${fmtBRL(ct)}`);
+  const rl = document.getElementById('rv-lucro');
+  rl.textContent = fmtBRL(lucro);
+  rl.className   = `bi-value ${lucro >= 0 ? 'pos' : 'neg'}`;
+
+  setTxt('rv-margem', fmtPct(margem));
+  document.getElementById('rv-margem').style.color = margem >= 0 ? 'var(--green)' : 'var(--red)';
+  setTxt('rv-total-desc', fmtBRL(total));
+  setTxt('rv-pct-taxas',  fmtPct(pctTax));
+  setTxt('rv-break',      fmtBRL(brk));
+
+  // Shopee faixas table
+  const faixasDiv = document.getElementById('rev-shopee-faixas');
+  if (currentRevMP === 'shopee') {
+    faixasDiv.style.display = '';
+    const activeIdx = getShopeeTierIndex(price);
+    rates.shopee.tiers.forEach((t, i) => {
+      const row = document.getElementById(`faixa-row-${i+1}`);
+      if (row) {
+        row.className = (i === activeIdx) ? 'active-row' : '';
+        setTxt(`ft-com-${i+1}`, `${t.com}%`);
+        setTxt(`ft-fix-${i+1}`, fmtBRL(t.fixed));
+      }
+    });
+  } else {
+    faixasDiv.style.display = 'none';
+  }
+}
+
+// ============================
+// COMPARATOR
+// ============================
+const mpInfo = {
+  shopee:       { name:'Shopee',        icon:'🛍️', color:'var(--shopee)', rateLabel:'20%/14% + taxa fixa por faixa' },
+  mercadolivre: { name:'Mercado Livre', icon:'🛒', color:'#e8b600',       rateLabel:'19% + R$6 fixo' },
+  tiktok:       { name:'TikTok Shop',   icon:'🎵', color:'var(--tiktok)', rateLabel:'12% comissão + 5% afiliados' },
+  shein:        { name:'Shein',         icon:'👗', color:'var(--text2)',   rateLabel:'16%' },
+};
+
+function updateComparator() {
+  const ct = getVal('custo_produto') + getVal('custo_envio') + getVal('taxas_extras');
+  const mg = getVal('margem_lucro');
+  const al = getVal('aliquota');
+
+  const res = {};
+  ['shopee','mercadolivre','tiktok','shein'].forEach(mp => { res[mp] = calcIdealPrice(mp, ct, mg, al); });
+
+  const valid = Object.values(res).map(r => r.price).filter(p => p > 0);
+  const minP  = valid.length ? Math.min(...valid) : 0;
+
+  const grid = document.getElementById('comparator-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  ['shopee','mercadolivre','tiktok','shein'].forEach(mp => {
+    const r    = res[mp];
+    const info = mpInfo[mp];
+    const best = r.price > 0 && Math.abs(r.price - minP) < 0.01;
+    const totTax = r.com + r.fixed + r.afl + r.imposto;
+
+    const fixedRow = (mp !== 'tiktok' && mp !== 'shein')
+      ? `<div style="display:flex;justify-content:space-between;"><span>Taxa fixa</span><span style="color:var(--red)">−${fmtBRL(r.fixed)}</span></div>` : '';
+    const aflRow = mp === 'tiktok'
+      ? `<div style="display:flex;justify-content:space-between;"><span>Afiliados</span><span style="color:var(--orange)">−${fmtBRL(r.afl)}</span></div>` : '';
+
+    const card = document.createElement('div');
+    card.className = `comp-card${best ? ' best' : ''}`;
+    card.innerHTML = `
+      ${best ? '<div class="comp-best-tag">✦ Menor Preço</div>' : ''}
+      <div class="comp-mp-name">${info.icon} <span style="color:${info.color}">${info.name}</span></div>
+      <div class="comp-mp-rate">${info.rateLabel}</div>
+      <div class="comp-price" style="color:${info.color}">R$ ${fmt(r.price)}</div>
+      <div class="comp-profit" style="color:${r.lucro>=0?'var(--green)':'var(--red)'}">
+        ${r.lucro>=0?'▲':'▼'} Lucro: ${fmtBRL(Math.abs(r.lucro))}
+      </div>
+      <div style="height:1px;background:var(--border);margin:14px 0;"></div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--text3);">
+        <div style="display:flex;justify-content:space-between;"><span>Comissão</span><span style="color:var(--red)">−${fmtBRL(r.com)}</span></div>
+        ${fixedRow}${aflRow}
+        <div style="display:flex;justify-content:space-between;"><span>Impostos</span><span style="color:var(--yellow)">−${fmtBRL(r.imposto)}</span></div>
+        <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:6px;">
+          <span>Total taxas</span><span style="color:var(--text)">−${fmtBRL(totTax)}</span>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ============================
+// SELECT MP
+// ============================
+function selectMP(mp, btn) {
+  currentMP = mp;
+  document.querySelectorAll('#tab-calculator .mp-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateMPInfo(); calc();
+}
+function selectRevMP(mp, btn) {
+  currentRevMP = mp;
+  document.querySelectorAll('#tab-reverse .mp-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  calcReverse();
+}
+
+function updateMPInfo() {
+  const s = rates.shopee.tiers;
+  const infoMap = {
+    shopee: '<strong style="color:var(--shopee)">Shopee</strong> — ' +
+      '<span style="opacity:.8">até R$79,99:</span> <b>' + s[0].com + '% + R$' + fmt(s[0].fixed) + '</b> &nbsp;|&nbsp; ' +
+      '<span style="opacity:.8">R$80–99,99:</span> <b>' + s[1].com + '% + R$' + fmt(s[1].fixed) + '</b> &nbsp;|&nbsp; ' +
+      '<span style="opacity:.8">R$100–199,99:</span> <b>' + s[2].com + '% + R$' + fmt(s[2].fixed) + '</b> &nbsp;|&nbsp; ' +
+      '<span style="opacity:.8">R$200–499,99:</span> <b>' + s[3].com + '% + R$' + fmt(s[3].fixed) + '</b> &nbsp;|&nbsp; ' +
+      '<span style="opacity:.8">+R$500:</span> <b>' + s[4].com + '% + R$' + fmt(s[4].fixed) + '</b>',
+    mercadolivre: `<strong style="color:#e8b600">Mercado Livre</strong> — Comissão de ${rates.mercadolivre.com}% + taxa fixa de ${fmtBRL(rates.mercadolivre.fixed)}`,
+    tiktok: `<strong style="color:var(--tiktok)">TikTok Shop</strong> — Comissão de ${rates.tiktok.com}% + taxa de afiliados de ${rates.tiktok.afl}% = <strong style="color:var(--tiktok)">${rates.tiktok.com + rates.tiktok.afl}% total</strong>`,
+    shein: `<strong style="color:var(--text2)">Shein</strong> — Apenas comissão de ${rates.shein.com}%, sem taxa fixa`
+  };
+  document.getElementById('mp-info').innerHTML = infoMap[currentMP];
+}
+
+// ============================
+// TABS
+// ============================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${tab}'`)) b.classList.add('active');
+  });
+  if (tab === 'comparator') updateComparator();
+  if (tab === 'reverse')    calcReverse();
+  if (tab === 'saved')      renderSaved();
+}
+
+function updateRangeDisplay() { setTxt('margem-display', getVal('margem_lucro')); }
+
+// ============================
+// COPY
+// ============================
+function copiarResultado() {
+  const r    = lastResult;
+  const mp   = mpInfo[currentMP]?.name || currentMP;
+  const nome = (document.getElementById('nome_produto').value || '').trim();
+  const aflLine  = currentMP === 'tiktok' ? '\n📉 Taxa de afiliados: −' + fmtBRL(r.afl) : '';
+  const fixLine  = (currentMP !== 'tiktok' && currentMP !== 'shein') ? '\n📉 Taxa fixa: −' + fmtBRL(r.fixed) : '';
+  const nomeLine = nome ? '*' + nome + '*\n' : '';
+  const txt = nomeLine +
+    '*🧮 PriceIQ — Simulação de Precificação*\n' +
+    '===============================\n' +
+    '🛒 Marketplace: ' + mp + '\n' +
+    '*💸 Custo do produto: ' + fmtBRL(getVal('custo_produto')) + '*\n' +
+    (getVal('custo_envio')  ? '📦 Custo de envio: ' + fmtBRL(getVal('custo_envio'))  + '\n' : '') +
+    (getVal('taxas_extras') ? '➕ Taxas extras: '   + fmtBRL(getVal('taxas_extras')) + '\n' : '') +
+    '📊 Margem desejada: ' + r.margem + '%\n' +
+    '🏦 Alíquota: ' + r.aliquota + '%\n' +
+    '-------------------------------\n' +
+    '✅ Preço ideal de venda: ' + fmtBRL(r.price) + '\n' +
+    '📉 Comissão: −' + fmtBRL(r.com) + fixLine + aflLine + '\n' +
+    '📉 Impostos: −' + fmtBRL(r.imposto) + '\n' +
+    '📈 Receita líquida: ' + fmtBRL(r.receita) + '\n' +
+    '*💰 Lucro líquido: ' + fmtBRL(r.lucro) + '*\n' +
+    '===============================\n' +
+    'Gerado por PriceIQ';
+  navigator.clipboard.writeText(txt).then(() => showToast('📋 Resultado copiado!')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('📋 Resultado copiado!');
+  });
+}
+
+// ============================
+// SAVE / LOAD
+// ============================
+function salvarSimulacao() {
+  const saved = JSON.parse(localStorage.getItem('priceiq_saves')||'[]');
+  const r = lastResult;
+  const nome = (document.getElementById('nome_produto').value || '').trim();
+  saved.unshift({
+    id: Date.now(), date: new Date().toLocaleDateString('pt-BR'),
+    mp: currentMP, mpName: mpInfo[currentMP]?.name || currentMP,
+    nome: nome,
+    custo: getVal('custo_produto'), envio: getVal('custo_envio'),
+    extras: getVal('taxas_extras'), margem: getVal('margem_lucro'),
+    aliquota: getVal('aliquota'), price: r.price, lucro: r.lucro,
+    com: r.com, fixed: r.fixed, afl: r.afl, imposto: r.imposto, receita: r.receita,
+  });
+  localStorage.setItem('priceiq_saves', JSON.stringify(saved.slice(0,50)));
+  updateSavedCount(); showToast('💾 Simulação salva!');
+}
+
+function buildShareText(s) {
+  const nome    = s.nome ? s.nome : null;
+  const mp      = s.mpName || s.mp;
+  const custoT  = (s.custo||0) + (s.envio||0) + (s.extras||0);
+  const aflLine = (s.mp === 'tiktok' && s.afl > 0) ? '\n📉 Taxa de afiliados: −' + fmtBRL(s.afl||0) : '';
+  const fixLine = (s.mp !== 'tiktok' && s.mp !== 'shein') ? '\n📉 Taxa fixa: −' + fmtBRL(s.fixed||0) : '';
+  return (nome ? '📦 *' + nome + '*\n' : '') +
+    '🧮 *PriceIQ — Simulação de Precificação*\n' +
+    '===============================\n' +
+    '🛒 Marketplace: ' + mp + '\n' +
+    '💸 *Custo do produto: ' + fmtBRL(s.custo||0) + '*\n' +
+    (s.envio  ? '📦 Custo de envio: ' + fmtBRL(s.envio)  + '\n' : '') +
+    (s.extras ? '➕ Taxas extras: '   + fmtBRL(s.extras) + '\n' : '') +
+    '📊 Margem desejada: ' + s.margem + '%\n' +
+    '🏦 Alíquota: ' + s.aliquota + '%\n' +
+    '-------------------------------\n' +
+    '✅ Preço ideal de venda: ' + fmtBRL(s.price) + '\n' +
+    '📉 Comissão: −' + fmtBRL(s.com||0) + fixLine + aflLine + '\n' +
+    '📉 Impostos: −' + fmtBRL(s.imposto||0) + '\n' +
+    '📈 Receita líquida: ' + fmtBRL(s.receita||0) + '\n' +
+    '*💰 Lucro líquido: ' + fmtBRL(s.lucro) + '*\n' +
+    '===============================\n' +
+    'Gerado por PriceIQ';
+}
+
+function shareWhatsApp(id, e) {
+  e.stopPropagation();
+  const s = JSON.parse(localStorage.getItem('priceiq_saves')||'[]').find(x => x.id === id);
+  if (!s) return;
+  const txt = buildShareText(s);
+  const url = 'https://wa.me/?text=' + encodeURIComponent(txt);
+  window.open(url, '_blank');
+}
+
+function renderSaved() {
+  const saved = JSON.parse(localStorage.getItem('priceiq_saves')||'[]');
+  const list  = document.getElementById('saved-list');
+  if (!saved.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">💾</div><div>Nenhuma simulação salva ainda.<br/>Calcule e clique em "Salvar simulação".</div></div>';
+    return;
+  }
+  list.innerHTML = saved.map(s => {
+    const nomeLine = s.nome
+      ? '<div class="saved-item-product">' + s.nome + '</div>'
+      : '';
+    return '<div class="saved-item" onclick="loadSimulation(' + s.id + ')">' +
+      '<div class="saved-item-info">' +
+        nomeLine +
+        '<div class="saved-item-name">' + (mpInfo[s.mp]?.icon||'') + ' ' + s.mpName + ' — ' + s.date + '</div>' +
+        '<div class="saved-item-meta">Custo: ' + fmtBRL(s.custo) + ' · Margem: ' + s.margem + '% · Alíquota: ' + s.aliquota + '%</div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:10px;">' +
+        '<div>' +
+          '<div class="saved-item-price">' + fmtBRL(s.price) + '</div>' +
+          '<div style="font-size:11px;text-align:right;margin-top:3px;color:' + (s.lucro>=0?'var(--green)':'var(--red)') + '">' +
+            (s.lucro>=0?'▲':'▼') + ' ' + fmtBRL(Math.abs(s.lucro)) +
+          '</div>' +
+        '</div>' +
+        '<button class="wa-btn" onclick="shareWhatsApp(' + s.id + ',event)" title="Compartilhar no WhatsApp">' +
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+            '<path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.978-1.41A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" fill="#25D366"/>' +
+            '<path d="M17.006 14.57c-.275-.138-1.628-.803-1.88-.895-.25-.092-.433-.138-.615.138-.183.275-.708.895-.868 1.079-.16.183-.32.206-.595.069-.275-.138-1.16-.428-2.21-1.364-.817-.729-1.369-1.629-1.53-1.904-.16-.275-.017-.424.12-.561.124-.123.275-.32.413-.481.138-.16.183-.275.275-.458.092-.184.046-.344-.023-.481-.069-.138-.615-1.483-.843-2.03-.222-.533-.448-.46-.615-.469l-.524-.009c-.183 0-.48.069-.73.344-.252.275-.962.94-.962 2.29 0 1.35.985 2.656 1.123 2.839.138.184 1.938 2.96 4.697 4.15.656.283 1.168.452 1.567.579.658.209 1.258.18 1.731.109.528-.079 1.628-.666 1.857-1.309.229-.642.229-1.193.16-1.309-.068-.115-.251-.183-.526-.32z" fill="white"/>' +
+          '</svg>' +
+        '</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function loadSimulation(id) {
+  const s = JSON.parse(localStorage.getItem('priceiq_saves')||'[]').find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('nome_produto').value  = s.nome || '';
+  document.getElementById('custo_produto').value = s.custo;
+  document.getElementById('custo_envio').value   = s.envio;
+  document.getElementById('taxas_extras').value  = s.extras;
+  document.getElementById('margem_lucro').value  = s.margem;
+  document.getElementById('aliquota').value      = s.aliquota;
+  updateRangeDisplay();
+  currentMP = s.mp;
+  document.querySelectorAll('#tab-calculator .mp-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#tab-calculator .mp-btn').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${s.mp}'`)) b.classList.add('active');
+  });
+  updateMPInfo(); calc(); switchTab('calculator'); showToast('✅ Simulação carregada!');
+}
+
+function clearSaved() {
+  if (!confirm('Apagar todas as simulações salvas?')) return;
+  localStorage.removeItem('priceiq_saves'); updateSavedCount(); renderSaved();
+  showToast('🗑️ Simulações apagadas');
+}
+
+function updateSavedCount() {
+  const n  = JSON.parse(localStorage.getItem('priceiq_saves')||'[]').length;
+  const el = document.getElementById('saved-count');
+  if (n > 0) { el.textContent = n; el.style.display = 'inline'; } else { el.style.display = 'none'; }
+}
+
+// ============================
+// ADVANCED
+// ============================
+function saveAdvanced() {
+  const g = id => parseFloat(document.getElementById(id).value) || 0;
+  rates.shopee.tiers[0] = { maxPrice:  79.99,   com: g('adv-shopee-com1'), fixed: g('adv-shopee-f1') };
+  rates.shopee.tiers[1] = { maxPrice:  99.99,   com: g('adv-shopee-com2'), fixed: g('adv-shopee-f2') };
+  rates.shopee.tiers[2] = { maxPrice: 199.99,   com: g('adv-shopee-com3'), fixed: g('adv-shopee-f3') };
+  rates.shopee.tiers[3] = { maxPrice: 499.99,   com: g('adv-shopee-com4'), fixed: g('adv-shopee-f4') };
+  rates.shopee.tiers[4] = { maxPrice: Infinity, com: g('adv-shopee-com5'), fixed: g('adv-shopee-f5') };
+  rates.mercadolivre.com   = g('adv-ml-com');
+  rates.mercadolivre.fixed = g('adv-ml-fixed');
+  rates.tiktok.com = g('adv-tiktok-com');
+  rates.tiktok.afl = g('adv-tiktok-afl');
+  rates.shein.com  = g('adv-shein-com');
+  const tot = document.getElementById('adv-tiktok-total');
+  if (tot) tot.textContent = `${rates.tiktok.com + rates.tiktok.afl}%`;
+  updateMPInfo();
+}
+
+function resetAdvanced() {
+  rates = {
+    shopee: { tiers: [
+      { maxPrice:  79.99,   com: 20, fixed:  4 },
+      { maxPrice:  99.99,   com: 14, fixed: 16 },
+      { maxPrice: 199.99,   com: 14, fixed: 20 },
+      { maxPrice: 499.99,   com: 14, fixed: 26 },
+      { maxPrice: Infinity, com: 14, fixed: 26 },
+    ]},
+    mercadolivre: { com: 19, fixed: 6 },
+    tiktok: { com: 12, afl: 5 },
+    shein:  { com: 16 }
+  };
+  const sv = (id, v) => { document.getElementById(id).value = v; };
+  sv('adv-shopee-com1',20); sv('adv-shopee-f1', 4);
+  sv('adv-shopee-com2',14); sv('adv-shopee-f2',16);
+  sv('adv-shopee-com3',14); sv('adv-shopee-f3',20);
+  sv('adv-shopee-com4',14); sv('adv-shopee-f4',26);
+  sv('adv-shopee-com5',14); sv('adv-shopee-f5',26);
+  sv('adv-ml-com',19); sv('adv-ml-fixed',6);
+  sv('adv-tiktok-com',12); sv('adv-tiktok-afl',5);
+  sv('adv-shein-com',16);
+  document.getElementById('adv-tiktok-total').textContent = '17%';
+  updateMPInfo(); calc(); showToast('↺ Taxas restauradas para o padrão');
+}
+
+// ============================
+// INIT
+// ============================
+updateMPInfo();
+calc();
+calcReverse();
+updateSavedCount();
+</script>
+</body>
+</html>

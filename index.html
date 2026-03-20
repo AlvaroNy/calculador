@@ -362,6 +362,7 @@
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
           <span style="font-size:13px;color:var(--text2);font-weight:500;">Usando os dados da calculadora.</span>
           <span class="btn btn-ghost btn-sm" onclick="switchTab('calculator',document.querySelector('.tab-btn'))">← Editar dados</span>
+          <button class="btn btn-primary btn-sm" onclick="copiarComparador()" style="margin-left:auto;">📋 Copiar comparativo</button>
         </div>
       </div>
     </div>
@@ -916,18 +917,18 @@ function updateRangeDisplay() { setTxt('margem-display', getVal('margem_lucro'))
 // ============================
 function copiarResultado() {
   const r    = lastResult;
+  const icon = mpInfo[currentMP]?.icon || '';
   const mp   = mpInfo[currentMP]?.name || currentMP;
   const nome = (document.getElementById('nome_produto').value || '').trim();
-  const aflLine  = currentMP === 'tiktok' ? '\n📉 Taxa de afiliados: −' + fmtBRL(r.afl) : '';
-  const fixLine  = (currentMP !== 'tiktok' && currentMP !== 'shein') ? '\n📉 Taxa fixa: −' + fmtBRL(r.fixed) : '';
-  const nomeLine = nome ? '*' + nome + '*\n' : '';
-  const txt = nomeLine +
-    '*🧮 PriceIQ — Simulação de Precificação*\n' +
+  const aflLine = currentMP === 'tiktok' ? '\n📉 Taxa de afiliados: −' + fmtBRL(r.afl) : '';
+  const fixLine = (currentMP !== 'tiktok' && currentMP !== 'shein') ? '\n📉 Taxa fixa: −' + fmtBRL(r.fixed) : '';
+  const txt =
+    icon + ' *' + mp + '*\n' +
     '===============================\n' +
-    '🛒 Marketplace: ' + mp + '\n' +
+    (nome ? '📦 *' + nome + '*\n' : '') +
     '*💸 Custo do produto: ' + fmtBRL(getVal('custo_produto')) + '*\n' +
-    (getVal('custo_envio')  ? '📦 Custo de envio: ' + fmtBRL(getVal('custo_envio'))  + '\n' : '') +
-    (getVal('taxas_extras') ? '➕ Taxas extras: '   + fmtBRL(getVal('taxas_extras')) + '\n' : '') +
+    (getVal('custo_envio')  ? '📦 Custo de envio: '  + fmtBRL(getVal('custo_envio'))  + '\n' : '') +
+    (getVal('taxas_extras') ? '➕ Taxas extras: '    + fmtBRL(getVal('taxas_extras')) + '\n' : '') +
     '📊 Margem desejada: ' + r.margem + '%\n' +
     '🏦 Alíquota: ' + r.aliquota + '%\n' +
     '-------------------------------\n' +
@@ -937,13 +938,51 @@ function copiarResultado() {
     '📈 Receita líquida: ' + fmtBRL(r.receita) + '\n' +
     '*💰 Lucro líquido: ' + fmtBRL(r.lucro) + '*\n' +
     '===============================\n' +
-    'Gerado por PriceIQ';
-  navigator.clipboard.writeText(txt).then(() => showToast('📋 Resultado copiado!')).catch(() => {
+    'Pack de Ferramentas do Nayder';
+  copyToClipboard(txt, '📋 Resultado copiado!');
+}
+
+function copyToClipboard(txt, msg) {
+  navigator.clipboard.writeText(txt).then(() => showToast(msg)).catch(() => {
     const ta = document.createElement('textarea');
     ta.value = txt; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta);
-    showToast('📋 Resultado copiado!');
+    showToast(msg);
   });
+}
+
+function copiarComparador() {
+  const nome     = (document.getElementById('nome_produto').value || '').trim();
+  const margem   = getVal('margem_lucro');
+  const aliquota = getVal('aliquota');
+  const ct       = getVal('custo_produto') + getVal('custo_envio') + getVal('taxas_extras');
+  const results  = {};
+  ['shopee','mercadolivre','tiktok','shein'].forEach(mp => {
+    results[mp] = calcIdealPrice(mp, ct, margem, aliquota);
+  });
+
+  let txt = '📊 *Comparador de Marketplaces*\n';
+  txt += '===============================\n';
+  if (nome) txt += '📦 *' + nome + '*\n';
+  txt += '*💸 Custo do produto: ' + fmtBRL(getVal('custo_produto')) + '*\n';
+  if (getVal('custo_envio'))  txt += '📦 Custo de envio: '  + fmtBRL(getVal('custo_envio'))  + '\n';
+  if (getVal('taxas_extras')) txt += '➕ Taxas extras: '    + fmtBRL(getVal('taxas_extras')) + '\n';
+  txt += '📈 Previsão de lucro: ' + margem + '%\n';
+  txt += '🏦 Imposto: ' + aliquota + '%\n';
+  txt += '-------------------------------\n';
+
+  ['shopee','mercadolivre','tiktok','shein'].forEach(mp => {
+    const r    = results[mp];
+    const info = mpInfo[mp];
+    const pct  = r.price > 0 ? ((r.lucro / r.price) * 100).toFixed(1).replace('.',',') + '%' : '—';
+    txt += '\n' + info.icon + ' ' + info.name + '\n';
+    txt += 'Valor de Venda: *' + fmtBRL(r.price) + '*\n';
+    txt += 'Previsão de Lucro: *' + fmtBRL(r.lucro) + '* (' + pct + ')\n';
+  });
+
+  txt += '===============================\n';
+  txt += 'Pack de Ferramentas do Nayder';
+  copyToClipboard(txt, '📊 Comparador copiado!');
 }
 
 // ============================
@@ -996,8 +1035,11 @@ function shareWhatsApp(id, e) {
   const s = JSON.parse(localStorage.getItem('priceiq_saves')||'[]').find(x => x.id === id);
   if (!s) return;
   const txt = buildShareText(s);
-  const url = 'https://wa.me/?text=' + encodeURIComponent(txt);
-  window.open(url, '_blank');
+  if (navigator.share) {
+    navigator.share({ text: txt }).catch(function(){});
+  } else {
+    copyToClipboard(txt, '📋 Texto copiado! Cole no WhatsApp.');
+  }
 }
 
 function renderSaved() {

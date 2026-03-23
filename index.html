@@ -213,6 +213,109 @@
   ::-webkit-scrollbar{ width:6px; height:6px; }
   ::-webkit-scrollbar-track{ background:var(--bg); }
   ::-webkit-scrollbar-thumb{ background:var(--border2); border-radius:3px; }
+
+  /* TAXA GESTOR TOGGLE */
+  .gestor-toggle-row {
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:10px; padding:12px 16px; margin-bottom:0;
+    cursor:pointer; transition:border-color 0.2s;
+  }
+  .gestor-toggle-row:hover { border-color:var(--border2); }
+  .gestor-toggle-row.active { border-color:var(--accent); background:var(--accent-glow); }
+  .gestor-toggle-info { display:flex; flex-direction:column; gap:2px; }
+  .gestor-toggle-title { font-size:13px; font-weight:600; color:var(--text); }
+  .gestor-toggle-sub { font-size:11px; color:var(--text3); }
+  .switch { position:relative; width:42px; height:24px; flex-shrink:0; }
+  .switch input { display:none; }
+  .switch-track {
+    position:absolute; inset:0; background:var(--border);
+    border-radius:12px; cursor:pointer; transition:0.2s;
+  }
+  .switch input:checked + .switch-track { background:var(--accent); }
+  .switch-track::after {
+    content:''; position:absolute; left:4px; top:4px;
+    width:16px; height:16px; background:white; border-radius:50%; transition:0.2s;
+  }
+  .switch input:checked + .switch-track::after { transform:translateX(18px); }
+
+  .gestor-field-wrap {
+    overflow:hidden; max-height:0;
+    transition:max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+    opacity:0; margin-top:0;
+  }
+  .gestor-field-wrap.visible {
+    max-height:80px; opacity:1; margin-top:12px;
+  }
+
+  /* BULK MODULE */
+  .bulk-layout { display:grid; grid-template-columns:340px 1fr; gap:20px; align-items:start; }
+  @media(max-width:900px){ .bulk-layout{ grid-template-columns:1fr; } }
+
+  .drop-zone {
+    border:2px dashed var(--border2); border-radius:var(--radius);
+    background:var(--bg2); padding:40px 24px; text-align:center;
+    cursor:pointer; transition:all 0.2s; position:relative;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color:var(--accent); background:var(--accent-glow);
+  }
+  .drop-zone input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+  .drop-icon { font-size:40px; margin-bottom:12px; }
+  .drop-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--text); margin-bottom:6px; }
+  .drop-sub { font-size:12px; color:var(--text3); line-height:1.5; }
+
+  .bulk-template-hint {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:10px; padding:14px 16px; margin-top:14px;
+    font-size:12px; color:var(--text3); line-height:1.7;
+  }
+  .bulk-template-hint strong { color:var(--text2); }
+  .bulk-col-tag {
+    display:inline-block; background:var(--bg3); border:1px solid var(--border2);
+    border-radius:5px; padding:1px 7px; font-size:11px; font-weight:600;
+    color:var(--accent); margin:1px 2px; font-family:monospace;
+  }
+
+  .bulk-results-header {
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:10px; margin-bottom:16px;
+  }
+  .bulk-results-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; }
+  .bulk-results-meta { font-size:12px; color:var(--text3); }
+
+  .bulk-table-wrap { overflow-x:auto; border-radius:var(--radius); border:1px solid var(--border); }
+  table.bulk-table { width:100%; border-collapse:collapse; font-size:13px; min-width:760px; }
+  .bulk-table thead tr { background:var(--bg3); }
+  .bulk-table th {
+    text-align:left; padding:11px 14px;
+    font-size:10px; font-weight:700; letter-spacing:0.5px;
+    text-transform:uppercase; color:var(--text3);
+    border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  .bulk-table td { padding:10px 14px; border-bottom:1px solid rgba(42,53,80,0.4); vertical-align:middle; }
+  .bulk-table tbody tr:last-child td { border-bottom:none; }
+  .bulk-table tbody tr:hover td { background:rgba(79,138,255,0.04); }
+  .bulk-table .td-name { font-weight:600; color:var(--text); max-width:180px; }
+  .bulk-table .td-custo { color:var(--text2); }
+  .bulk-table .td-price { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; }
+  .bulk-table .td-lucro { font-size:12px; font-weight:600; }
+  .bulk-table .td-best { position:relative; }
+  .best-pill {
+    display:inline-block; background:rgba(0,212,170,0.12);
+    border:1px solid rgba(0,212,170,0.3); color:var(--green);
+    font-size:9px; font-weight:800; padding:1px 6px; border-radius:8px;
+    letter-spacing:0.3px; text-transform:uppercase; margin-left:4px;
+    vertical-align:middle;
+  }
+  .bulk-progress {
+    background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius);
+    padding:32px; text-align:center;
+  }
+  .bulk-progress-bar-wrap { height:6px; background:var(--border); border-radius:3px; margin:16px 0 8px; overflow:hidden; }
+  .bulk-progress-bar { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent3)); border-radius:3px; transition:width 0.3s ease; }
+  .bulk-error-row td { color:var(--red) !important; font-size:12px; }
+  .row-num { color:var(--text3); font-size:11px; width:32px; text-align:right; }
 </style>
 </head>
 <body>
@@ -239,6 +342,7 @@
     <button class="tab-btn" onclick="switchTab('reverse',this)">↩ Simulação Reversa</button>
     <button class="tab-btn" onclick="switchTab('advanced',this)">🔧 Modo Avançado</button>
     <button class="tab-btn" onclick="switchTab('saved',this)">💾 Simulações <span id="saved-count" style="background:var(--accent);color:white;font-size:10px;padding:1px 6px;border-radius:10px;display:none;"></span></button>
+    <button class="tab-btn" onclick="switchTab('bulk',this)">⚡ Em Massa</button>
   </div>
 
   <!-- CALCULADORA -->
@@ -299,6 +403,13 @@
             <div class="form-label">Alíquota tributária <div class="tooltip" title="% de imposto sobre o valor de venda (Simples ~6%)">?</div></div>
             <div class="input-wrap"><input type="number" id="aliquota" class="no-prefix" value="6" min="0" max="100" step="0.1" oninput="calc()"/><span class="input-suffix">%</span></div>
           </div>
+          <!-- TAXA GESTOR — shown/hidden by advanced toggle -->
+          <div id="gestor-field-calc" class="gestor-field-wrap">
+            <div class="form-group" style="margin-bottom:0;">
+              <div class="form-label" style="color:var(--accent2);">Taxa do Gestor <div class="tooltip" title="% cobrado pelo gestor de marketplace sobre o valor de venda">?</div></div>
+              <div class="input-wrap"><input type="number" id="taxa_gestor" class="no-prefix" value="0" min="0" max="100" step="0.1" oninput="calc()"/><span class="input-suffix">%</span></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -327,6 +438,10 @@
             <div class="breakdown-item" id="row-afiliados" style="display:none;">
               <span class="bi-label"><span class="bi-dot orange"></span>Taxa de afiliados</span>
               <span class="bi-value orange" id="bi-afiliados">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item" id="row-gestor" style="display:none;">
+              <span class="bi-label"><span class="bi-dot" style="background:var(--accent2)"></span>Taxa do Gestor</span>
+              <span class="bi-value" style="color:var(--accent2)" id="bi-gestor">−R$ 0,00</span>
             </div>
             <div class="breakdown-item">
               <span class="bi-label"><span class="bi-dot yellow"></span>Impostos</span>
@@ -463,6 +578,27 @@
         </div>
       </div>
     </div>
+    <!-- TAXA GESTOR TOGGLE CARD -->
+    <div class="card" style="margin-bottom:16px;padding:20px 24px;">
+      <div class="card-title">Configurações Extras</div>
+      <div class="gestor-toggle-row" id="gestor-toggle-row" onclick="toggleGestor()">
+        <div class="gestor-toggle-info">
+          <div class="gestor-toggle-title">👤 Taxa do Gestor</div>
+          <div class="gestor-toggle-sub">Habilita campo de % do gestor de marketplace na calculadora</div>
+        </div>
+        <label class="switch" onclick="event.stopPropagation()">
+          <input type="checkbox" id="gestor-enabled" onchange="toggleGestor()"/>
+          <span class="switch-track"></span>
+        </label>
+      </div>
+      <div id="gestor-field-adv" style="display:none;margin-top:14px;">
+        <div class="adv-field" style="margin-bottom:0;">
+          <label>Percentual padrão da Taxa do Gestor (%)</label>
+          <input type="number" id="adv-gestor-pct" value="5" min="0" max="100" step="0.1" oninput="calc()"/>
+        </div>
+      </div>
+    </div>
+
     <div class="advanced-grid">
 
       <!-- SHOPEE -->
@@ -551,6 +687,99 @@
     </div>
   </div>
 
+
+  <!-- PRECIFICAÇÃO EM MASSA -->
+  <div id="tab-bulk" class="tab-content">
+    <div class="bulk-layout">
+
+      <!-- LEFT: UPLOAD + INSTRUCTIONS -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card">
+          <div class="card-title">Upload do arquivo</div>
+
+          <div class="drop-zone" id="drop-zone">
+            <input type="file" id="bulk-file-input" accept=".csv,.xlsx,.xls" onchange="handleBulkFile(this.files[0])"/>
+            <div class="drop-icon">📂</div>
+            <div class="drop-title">Arraste ou clique para enviar</div>
+            <div class="drop-sub">Aceita <strong>.CSV</strong> ou <strong>.XLSX</strong><br/>até 5 MB</div>
+          </div>
+
+          <div class="bulk-template-hint">
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--text2);margin-bottom:8px;">📋 Colunas esperadas</div>
+            <span class="bulk-col-tag">nome</span>
+            <span class="bulk-col-tag">custo</span>
+            <span class="bulk-col-tag">envio</span>
+            <span class="bulk-col-tag">extras</span>
+            <span class="bulk-col-tag">aliquota</span>
+            <span class="bulk-col-tag">margem</span>
+            <div style="margin-top:10px;font-size:11px;line-height:1.7;">
+              <strong style="color:var(--text2);">envio</strong> e <strong style="color:var(--text2);">extras</strong> são opcionais (use 0).<br/>
+              A primeira linha deve ser o cabeçalho.<br/>
+              Valores numéricos: use ponto <strong style="color:var(--text2);">.</strong> ou vírgula <strong style="color:var(--text2);">,</strong> como decimal.
+            </div>
+          </div>
+
+          <button class="btn btn-ghost btn-sm" onclick="downloadTemplate()" style="margin-top:12px;width:100%;justify-content:center;">
+            ⬇️ Baixar modelo CSV
+          </button>
+        </div>
+
+        <div class="card" id="bulk-config-card">
+          <div class="card-title">Defaults</div>
+          <p style="font-size:12px;color:var(--text3);margin-bottom:14px;">Usados quando a coluna estiver vazia na planilha.</p>
+          <div class="adv-field"><label>Custo de envio (R$)</label><input type="number" id="bulk-default-envio" value="0" min="0" step="0.01"/></div>
+          <div class="adv-field"><label>Taxas extras (R$)</label><input type="number" id="bulk-default-extras" value="0" min="0" step="0.01"/></div>
+          <div class="adv-field"><label>Alíquota tributária (%)</label><input type="number" id="bulk-default-aliquota" value="6" min="0" max="100" step="0.1"/></div>
+          <div class="adv-field"><label>Margem de lucro (%)</label><input type="number" id="bulk-default-margem" value="20" min="0" max="100" step="0.1"/></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: RESULTS TABLE -->
+      <div>
+        <div id="bulk-placeholder" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:60px 32px;text-align:center;color:var(--text3);">
+          <div style="font-size:48px;margin-bottom:16px;">⚡</div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text2);margin-bottom:8px;">Precificação em Massa</div>
+          <div style="font-size:13px;line-height:1.6;">Envie um arquivo CSV ou XLSX com seus produtos<br/>e receba os preços ideais para todos os marketplaces.</div>
+        </div>
+        <div id="bulk-processing" class="bulk-progress" style="display:none;">
+          <div style="font-size:32px;margin-bottom:12px;">⚙️</div>
+          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px;">Processando...</div>
+          <div id="bulk-progress-label" style="font-size:12px;color:var(--text3);">0 de 0 produtos</div>
+          <div class="bulk-progress-bar-wrap"><div class="bulk-progress-bar" id="bulk-progress-bar" style="width:0%"></div></div>
+        </div>
+        <div id="bulk-results-wrap" style="display:none;">
+          <div class="bulk-results-header">
+            <div>
+              <div class="bulk-results-title">✅ Resultados</div>
+              <div class="bulk-results-meta" id="bulk-results-meta"></div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-outline btn-sm" onclick="exportBulkCSV()">⬇️ Exportar CSV</button>
+              <button class="btn btn-primary btn-sm" onclick="exportBulkXLSX()">⬇️ Exportar XLSX</button>
+            </div>
+          </div>
+          <div class="bulk-table-wrap">
+            <table class="bulk-table">
+              <thead>
+                <tr>
+                  <th class="row-num">#</th>
+                  <th>Produto</th>
+                  <th>Custo</th>
+                  <th>Margem</th>
+                  <th>🛍️ Shopee</th>
+                  <th>🛒 Mercado Livre</th>
+                  <th>🎵 TikTok</th>
+                  <th>👗 Shein</th>
+                </tr>
+              </thead>
+              <tbody id="bulk-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 <div class="toast" id="toast"></div>
 
@@ -630,16 +859,16 @@ function getMPFees(mp, price) {
 // FORWARD PRICE CALC
 // Resolve: price*(1 - comPct - aflPct - taxPct - mPct) = custo + fixed
 // ============================
-function calcIdealPrice(mp, custoTotal, margemPct, aliquotaPct) {
+function calcIdealPrice(mp, custoTotal, margemPct, aliquotaPct, gestorPct) {
   const taxPct = aliquotaPct / 100;
   const mPct   = margemPct   / 100;
+  const gPct   = (gestorPct  || 0) / 100;
 
   if (mp === 'shopee') {
-    // Iterative convergence (tier depends on final price)
-    let price = custoTotal / Math.max(0.001, 1 - (rates.shopee.tiers[0].com/100) - taxPct - mPct);
+    let price = custoTotal / Math.max(0.001, 1 - (rates.shopee.tiers[0].com/100) - taxPct - gPct - mPct);
     for (let i = 0; i < 25; i++) {
       const tier = getShopeeTier(price);
-      const div  = 1 - (tier.com/100) - taxPct - mPct;
+      const div  = 1 - (tier.com/100) - taxPct - gPct - mPct;
       if (div <= 0) { price = 0; break; }
       const newPrice = (custoTotal + tier.fixed) / div;
       if (Math.abs(newPrice - price) < 0.001) { price = newPrice; break; }
@@ -648,40 +877,44 @@ function calcIdealPrice(mp, custoTotal, margemPct, aliquotaPct) {
     if (price <= 0) return zero();
     const fees = getMPFees('shopee', price);
     const imp  = price * taxPct;
-    const rec  = price - fees.com - fees.fixed - imp;
-    return { price, com: fees.com, fixed: fees.fixed, afl: 0, imposto: imp, receita: rec, lucro: rec - custoTotal };
+    const ges  = price * gPct;
+    const rec  = price - fees.com - fees.fixed - imp - ges;
+    return { price, com: fees.com, fixed: fees.fixed, afl: 0, imposto: imp, gestor: ges, receita: rec, lucro: rec - custoTotal };
 
   } else if (mp === 'mercadolivre') {
-    const div = 1 - (rates.mercadolivre.com/100) - taxPct - mPct;
+    const div = 1 - (rates.mercadolivre.com/100) - taxPct - gPct - mPct;
     if (div <= 0) return zero();
     const price = (custoTotal + rates.mercadolivre.fixed) / div;
     const fees  = getMPFees('mercadolivre', price);
     const imp   = price * taxPct;
-    const rec   = price - fees.com - fees.fixed - imp;
-    return { price, com: fees.com, fixed: fees.fixed, afl: 0, imposto: imp, receita: rec, lucro: rec - custoTotal };
+    const ges   = price * gPct;
+    const rec   = price - fees.com - fees.fixed - imp - ges;
+    return { price, com: fees.com, fixed: fees.fixed, afl: 0, imposto: imp, gestor: ges, receita: rec, lucro: rec - custoTotal };
 
   } else if (mp === 'tiktok') {
     const totPct = (rates.tiktok.com + rates.tiktok.afl) / 100;
-    const div = 1 - totPct - taxPct - mPct;
+    const div = 1 - totPct - taxPct - gPct - mPct;
     if (div <= 0) return zero();
     const price = custoTotal / div;
     const fees  = getMPFees('tiktok', price);
     const imp   = price * taxPct;
-    const rec   = price - fees.com - fees.afl - imp;
-    return { price, com: fees.com, fixed: 0, afl: fees.afl, imposto: imp, receita: rec, lucro: rec - custoTotal };
+    const ges   = price * gPct;
+    const rec   = price - fees.com - fees.afl - imp - ges;
+    return { price, com: fees.com, fixed: 0, afl: fees.afl, imposto: imp, gestor: ges, receita: rec, lucro: rec - custoTotal };
 
   } else { // shein
-    const div = 1 - (rates.shein.com/100) - taxPct - mPct;
+    const div = 1 - (rates.shein.com/100) - taxPct - gPct - mPct;
     if (div <= 0) return zero();
     const price = custoTotal / div;
     const fees  = getMPFees('shein', price);
     const imp   = price * taxPct;
-    const rec   = price - fees.com - imp;
-    return { price, com: fees.com, fixed: 0, afl: 0, imposto: imp, receita: rec, lucro: rec - custoTotal };
+    const ges   = price * gPct;
+    const rec   = price - fees.com - imp - ges;
+    return { price, com: fees.com, fixed: 0, afl: 0, imposto: imp, gestor: ges, receita: rec, lucro: rec - custoTotal };
   }
 }
 
-function zero() { return { price:0, com:0, fixed:0, afl:0, imposto:0, receita:0, lucro:0 }; }
+function zero() { return { price:0, com:0, fixed:0, afl:0, imposto:0, gestor:0, receita:0, lucro:0 }; }
 
 // ============================
 // MAIN CALC
@@ -692,8 +925,10 @@ function calc() {
   const ct = getVal('custo_produto') + getVal('custo_envio') + getVal('taxas_extras');
   const mg = getVal('margem_lucro');
   const al = getVal('aliquota');
-  const r  = calcIdealPrice(currentMP, ct, mg, al);
-  lastResult = { ...r, custoTotal: ct, margem: mg, aliquota: al, mp: currentMP };
+  const gestorEnabled = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
+  const gl = gestorEnabled ? getVal('taxa_gestor') : 0;
+  const r  = calcIdealPrice(currentMP, ct, mg, al, gl);
+  lastResult = { ...r, custoTotal: ct, margem: mg, aliquota: al, gestorPct: gl, mp: currentMP };
 
   setTxt('res-preco', fmt(r.price));
   const badge = document.getElementById('res-lucro-badge');
@@ -724,6 +959,16 @@ function calc() {
     rowAfl.style.display = 'none';
   }
 
+  // gestor row
+  const rowGestor = document.getElementById('row-gestor');
+  const gestorEnabled2 = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
+  if (gestorEnabled2 && r.gestor > 0) {
+    rowGestor.style.display = '';
+    setTxt('bi-gestor', `−${fmtBRL(r.gestor)}`);
+  } else {
+    rowGestor.style.display = 'none';
+  }
+
   setTxt('bi-imposto', `−${fmtBRL(r.imposto)}`);
   setTxt('bi-receita', fmtBRL(r.receita));
   const le = document.getElementById('bi-lucro');
@@ -745,10 +990,13 @@ function calcReverse() {
   const ct    = getVal('custo_produto') + getVal('custo_envio') + getVal('taxas_extras');
   const al    = getVal('aliquota');
 
+  const gestorEnabledR = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
+  const glR  = gestorEnabledR ? getVal('taxa_gestor') : 0;
   const fees   = getMPFees(currentRevMP, price);
   const imp    = price * (al / 100);
-  const total  = fees.com + fees.fixed + fees.afl + imp;
-  const receita = price - fees.com - fees.fixed - fees.afl - imp;
+  const ges    = price * (glR / 100);
+  const total  = fees.com + fees.fixed + fees.afl + imp + ges;
+  const receita = price - fees.com - fees.fixed - fees.afl - imp - ges;
   const lucro  = receita - ct;
   const margem = price > 0 ? (lucro / price) * 100 : 0;
   const pctTax = price > 0 ? (total / price) * 100 : 0;
@@ -819,8 +1067,10 @@ function updateComparator() {
   const mg = getVal('margem_lucro');
   const al = getVal('aliquota');
 
+  const gestorEnabledC = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
+  const glC = gestorEnabledC ? getVal('taxa_gestor') : 0;
   const res = {};
-  ['shopee','mercadolivre','tiktok','shein'].forEach(mp => { res[mp] = calcIdealPrice(mp, ct, mg, al); });
+  ['shopee','mercadolivre','tiktok','shein'].forEach(mp => { res[mp] = calcIdealPrice(mp, ct, mg, al, glC); });
 
   const valid = Object.values(res).map(r => r.price).filter(p => p > 0);
   const minP  = valid.length ? Math.min(...valid) : 0;
@@ -920,20 +1170,23 @@ function copiarResultado() {
   const icon = mpInfo[currentMP]?.icon || '';
   const mp   = mpInfo[currentMP]?.name || currentMP;
   const nome = (document.getElementById('nome_produto').value || '').trim();
-  const aflLine = currentMP === 'tiktok' ? '\n📉 Taxa de afiliados: −' + fmtBRL(r.afl) : '';
-  const fixLine = (currentMP !== 'tiktok' && currentMP !== 'shein') ? '\n📉 Taxa fixa: −' + fmtBRL(r.fixed) : '';
+  const gestorOn = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
+  const aflLine    = currentMP === 'tiktok' ? '\n📉 Taxa de afiliados: −' + fmtBRL(r.afl) : '';
+  const fixLine    = (currentMP !== 'tiktok' && currentMP !== 'shein') ? '\n📉 Taxa fixa: −' + fmtBRL(r.fixed) : '';
+  const gestorLine = (gestorOn && r.gestor > 0) ? '\n👤 Taxa do Gestor: −' + fmtBRL(r.gestor) + ' (' + r.gestorPct + '%)' : '';
   const txt =
     icon + ' *' + mp + '*\n' +
     '===============================\n' +
-    (nome ? '📦 *' + nome + '*\n' : '') +
+    (nome ? '📦 Produto: *' + nome + '*\n' : '') +
     '*💸 Custo do produto: ' + fmtBRL(getVal('custo_produto')) + '*\n' +
     (getVal('custo_envio')  ? '📦 Custo de envio: '  + fmtBRL(getVal('custo_envio'))  + '\n' : '') +
     (getVal('taxas_extras') ? '➕ Taxas extras: '    + fmtBRL(getVal('taxas_extras')) + '\n' : '') +
     '📊 Margem desejada: ' + r.margem + '%\n' +
     '🏦 Alíquota: ' + r.aliquota + '%\n' +
+    (gestorOn && r.gestor > 0 ? '👤 Taxa do Gestor: ' + r.gestorPct + '%\n' : '') +
     '-------------------------------\n' +
     '✅ Preço ideal de venda: ' + fmtBRL(r.price) + '\n' +
-    '📉 Comissão: −' + fmtBRL(r.com) + fixLine + aflLine + '\n' +
+    '📉 Comissão: −' + fmtBRL(r.com) + fixLine + aflLine + gestorLine + '\n' +
     '📉 Impostos: −' + fmtBRL(r.imposto) + '\n' +
     '📈 Receita líquida: ' + fmtBRL(r.receita) + '\n' +
     '*💰 Lucro líquido: ' + fmtBRL(r.lucro) + '*\n' +
@@ -956,19 +1209,22 @@ function copiarComparador() {
   const margem   = getVal('margem_lucro');
   const aliquota = getVal('aliquota');
   const ct       = getVal('custo_produto') + getVal('custo_envio') + getVal('taxas_extras');
+  const gestorOn = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
+  const gl       = gestorOn ? getVal('taxa_gestor') : 0;
   const results  = {};
   ['shopee','mercadolivre','tiktok','shein'].forEach(mp => {
-    results[mp] = calcIdealPrice(mp, ct, margem, aliquota);
+    results[mp] = calcIdealPrice(mp, ct, margem, aliquota, gl);
   });
 
   let txt = '📊 *Comparador de Marketplaces*\n';
   txt += '===============================\n';
-  if (nome) txt += '📦 *' + nome + '*\n';
+  if (nome) txt += '📦 Produto: *' + nome + '*\n';
   txt += '*💸 Custo do produto: ' + fmtBRL(getVal('custo_produto')) + '*\n';
   if (getVal('custo_envio'))  txt += '📦 Custo de envio: '  + fmtBRL(getVal('custo_envio'))  + '\n';
   if (getVal('taxas_extras')) txt += '➕ Taxas extras: '    + fmtBRL(getVal('taxas_extras')) + '\n';
   txt += '📈 Previsão de lucro: ' + margem + '%\n';
   txt += '🏦 Imposto: ' + aliquota + '%\n';
+  if (gestorOn && gl > 0) txt += '👤 Taxa do Gestor: ' + gl + '%\n';
   txt += '-------------------------------\n';
 
   ['shopee','mercadolivre','tiktok','shein'].forEach(mp => {
@@ -978,6 +1234,7 @@ function copiarComparador() {
     txt += '\n' + info.icon + ' ' + info.name + '\n';
     txt += 'Valor de Venda: *' + fmtBRL(r.price) + '*\n';
     txt += 'Previsão de Lucro: *' + fmtBRL(r.lucro) + '* (' + pct + ')\n';
+    if (gestorOn && r.gestor > 0) txt += 'Taxa do Gestor: −' + fmtBRL(r.gestor) + '\n';
   });
 
   txt += '===============================\n';
@@ -1000,34 +1257,36 @@ function salvarSimulacao() {
     extras: getVal('taxas_extras'), margem: getVal('margem_lucro'),
     aliquota: getVal('aliquota'), price: r.price, lucro: r.lucro,
     com: r.com, fixed: r.fixed, afl: r.afl, imposto: r.imposto, receita: r.receita,
+    gestor: r.gestor||0, gestorPct: r.gestorPct||0,
   });
   localStorage.setItem('priceiq_saves', JSON.stringify(saved.slice(0,50)));
   updateSavedCount(); showToast('💾 Simulação salva!');
 }
 
 function buildShareText(s) {
-  const nome    = s.nome ? s.nome : null;
-  const mp      = s.mpName || s.mp;
-  const custoT  = (s.custo||0) + (s.envio||0) + (s.extras||0);
-  const aflLine = (s.mp === 'tiktok' && s.afl > 0) ? '\n📉 Taxa de afiliados: −' + fmtBRL(s.afl||0) : '';
-  const fixLine = (s.mp !== 'tiktok' && s.mp !== 'shein') ? '\n📉 Taxa fixa: −' + fmtBRL(s.fixed||0) : '';
-  return (nome ? '📦 *' + nome + '*\n' : '') +
-    '🧮 *PriceIQ — Simulação de Precificação*\n' +
+  const nome       = s.nome ? s.nome : null;
+  const mp         = s.mpName || s.mp;
+  const mpIcon     = mpInfo[s.mp]?.icon || '';
+  const aflLine    = (s.mp === 'tiktok' && s.afl > 0) ? '\n📉 Taxa de afiliados: −' + fmtBRL(s.afl||0) : '';
+  const fixLine    = (s.mp !== 'tiktok' && s.mp !== 'shein') ? '\n📉 Taxa fixa: −' + fmtBRL(s.fixed||0) : '';
+  const gestorLine = (s.gestor > 0) ? '\n👤 Taxa do Gestor: −' + fmtBRL(s.gestor) + ' (' + (s.gestorPct||0) + '%)' : '';
+  return mpIcon + ' *' + mp + '*\n' +
     '===============================\n' +
-    '🛒 Marketplace: ' + mp + '\n' +
-    '💸 *Custo do produto: ' + fmtBRL(s.custo||0) + '*\n' +
+    (nome ? '📦 Produto: *' + nome + '*\n' : '') +
+    '*💸 Custo do produto: ' + fmtBRL(s.custo||0) + '*\n' +
     (s.envio  ? '📦 Custo de envio: ' + fmtBRL(s.envio)  + '\n' : '') +
     (s.extras ? '➕ Taxas extras: '   + fmtBRL(s.extras) + '\n' : '') +
     '📊 Margem desejada: ' + s.margem + '%\n' +
     '🏦 Alíquota: ' + s.aliquota + '%\n' +
+    (s.gestor > 0 ? '👤 Taxa do Gestor: ' + (s.gestorPct||0) + '%\n' : '') +
     '-------------------------------\n' +
     '✅ Preço ideal de venda: ' + fmtBRL(s.price) + '\n' +
-    '📉 Comissão: −' + fmtBRL(s.com||0) + fixLine + aflLine + '\n' +
+    '📉 Comissão: −' + fmtBRL(s.com||0) + fixLine + aflLine + gestorLine + '\n' +
     '📉 Impostos: −' + fmtBRL(s.imposto||0) + '\n' +
     '📈 Receita líquida: ' + fmtBRL(s.receita||0) + '\n' +
     '*💰 Lucro líquido: ' + fmtBRL(s.lucro) + '*\n' +
     '===============================\n' +
-    'Gerado por PriceIQ';
+    'Pack de Ferramentas do Nayder';
 }
 
 function shareWhatsApp(id, e) {
@@ -1154,12 +1413,349 @@ function resetAdvanced() {
 }
 
 // ============================
+// TAXA GESTOR TOGGLE
+// ============================
+function toggleGestor() {
+  const cb      = document.getElementById('gestor-enabled');
+  const row     = document.getElementById('gestor-toggle-row');
+  const fieldCalc = document.getElementById('gestor-field-calc');
+  const fieldAdv  = document.getElementById('gestor-field-adv');
+  const on = cb.checked;
+  row.classList.toggle('active', on);
+  if (fieldCalc) fieldCalc.classList.toggle('visible', on);
+  if (fieldAdv)  fieldAdv.style.display = on ? '' : 'none';
+  // Sync taxa_gestor from adv-gestor-pct if field was just shown
+  if (on) {
+    const pct = parseFloat(document.getElementById('adv-gestor-pct').value) || 0;
+    document.getElementById('taxa_gestor').value = pct;
+  }
+  calc();
+}
+
+// Sync adv-gestor-pct -> taxa_gestor live
+document.addEventListener('DOMContentLoaded', function() {
+  const advPct = document.getElementById('adv-gestor-pct');
+  if (advPct) {
+    advPct.addEventListener('input', function() {
+      document.getElementById('taxa_gestor').value = this.value;
+      calc();
+    });
+  }
+});
+
+// ============================
 // INIT
 // ============================
 updateMPInfo();
 calc();
 calcReverse();
 updateSavedCount();
+
+// ============================
+// BULK PRICING MODULE
+// ============================
+let bulkData = [];
+
+// Drag-and-drop on drop zone
+(function() {
+  const dz = document.getElementById('drop-zone');
+  if (!dz) return;
+  dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', function()  { dz.classList.remove('drag-over'); });
+  dz.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dz.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f) handleBulkFile(f);
+  });
+})();
+
+function parseCsvLine(line) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQ = !inQ; }
+    else if ((ch === ',' || ch === ';') && !inQ) { result.push(cur.trim()); cur = ''; }
+    else { cur += ch; }
+  }
+  result.push(cur.trim());
+  return result;
+}
+
+function toNum(v, fallback) {
+  if (v === undefined || v === null || v === '') return fallback !== undefined ? fallback : 0;
+  const s = String(v).replace(/[R$\s]/g,'').replace(',','.');
+  const n = parseFloat(s);
+  return isNaN(n) ? (fallback !== undefined ? fallback : 0) : n;
+}
+
+function normalizeHeader(h) {
+  return String(h).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+}
+
+function parseRows(headers, rows) {
+  const idx = {};
+  const map = {
+    nome:     ['nome','name','produto','product','descricao','description'],
+    custo:    ['custo','custo_produto','cost','preco_custo','valor_custo','custo produto'],
+    envio:    ['envio','frete','shipping','custo_envio','custo envio'],
+    extras:   ['extras','taxas_extras','taxas extras','extra','other'],
+    aliquota: ['aliquota','alíquota','imposto','tax','tributacao','tributação','aliq'],
+    margem:   ['margem','margin','lucro','profit','margem_lucro','margem lucro'],
+  };
+  headers.forEach(function(h, i) {
+    const hn = normalizeHeader(h);
+    Object.keys(map).forEach(function(k) {
+      if (map[k].includes(hn) && idx[k] === undefined) idx[k] = i;
+    });
+  });
+  const defEnvio    = parseFloat(document.getElementById('bulk-default-envio').value)    || 0;
+  const defExtras   = parseFloat(document.getElementById('bulk-default-extras').value)   || 0;
+  const defAliquota = parseFloat(document.getElementById('bulk-default-aliquota').value) || 6;
+  const defMargem   = parseFloat(document.getElementById('bulk-default-margem').value)   || 20;
+
+  return rows.map(function(row, ri) {
+    if (!row || row.every(function(c){ return !c && c !== 0; })) return null;
+    return {
+      _row:     ri + 2,
+      nome:     idx.nome     !== undefined ? String(row[idx.nome] || '').trim() : ('Produto ' + (ri+1)),
+      custo:    toNum(idx.custo     !== undefined ? row[idx.custo]     : null, 0),
+      envio:    toNum(idx.envio     !== undefined ? row[idx.envio]     : null, defEnvio),
+      extras:   toNum(idx.extras    !== undefined ? row[idx.extras]    : null, defExtras),
+      aliquota: toNum(idx.aliquota  !== undefined ? row[idx.aliquota]  : null, defAliquota),
+      margem:   toNum(idx.margem    !== undefined ? row[idx.margem]    : null, defMargem),
+    };
+  }).filter(Boolean);
+}
+
+function handleBulkFile(file) {
+  if (!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (!['csv','xlsx','xls'].includes(ext)) { showToast('❌ Formato inválido. Use CSV ou XLSX.'); return; }
+  if (file.size > 5 * 1024 * 1024) { showToast('❌ Arquivo muito grande. Máx: 5 MB.'); return; }
+  showBulkProcessing();
+  const reader = new FileReader();
+  if (ext === 'csv') {
+    reader.onload = function(e) {
+      try {
+        const text = e.target.result;
+        const lines = text.split(/\r?\n/).filter(function(l){ return l.trim(); });
+        if (lines.length < 2) { showToast('❌ Arquivo sem dados.'); hideBulkProcessing(); return; }
+        const headers = parseCsvLine(lines[0]);
+        const rows    = lines.slice(1).map(parseCsvLine);
+        const items   = parseRows(headers, rows);
+        processBulk(items);
+      } catch(err) { showToast('❌ Erro ao ler CSV.'); hideBulkProcessing(); }
+    };
+    reader.readAsText(file, 'UTF-8');
+  } else {
+    // XLSX — use SheetJS from CDN
+    if (typeof XLSX === 'undefined') {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload = function() { readXLSX(file); };
+      s.onerror = function() { showToast('❌ Falha ao carregar leitor XLSX. Tente CSV.'); hideBulkProcessing(); };
+      document.head.appendChild(s);
+    } else { readXLSX(file); }
+  }
+}
+
+function readXLSX(file) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const wb   = XLSX.read(e.target.result, { type: 'array' });
+      const ws   = wb.Sheets[wb.SheetNames[0]];
+      const data = XLSX.utils.sheet_to_json(ws, { header:1, defval:'' });
+      if (data.length < 2) { showToast('❌ Planilha sem dados.'); hideBulkProcessing(); return; }
+      const headers = data[0].map(String);
+      const rows    = data.slice(1);
+      const items   = parseRows(headers, rows);
+      processBulk(items);
+    } catch(err) { showToast('❌ Erro ao ler XLSX.'); hideBulkProcessing(); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function showBulkProcessing() {
+  document.getElementById('bulk-placeholder').style.display  = 'none';
+  document.getElementById('bulk-results-wrap').style.display = 'none';
+  document.getElementById('bulk-processing').style.display   = '';
+}
+function hideBulkProcessing() {
+  document.getElementById('bulk-processing').style.display   = 'none';
+}
+
+function processBulk(items) {
+  if (!items.length) { showToast('❌ Nenhum produto encontrado no arquivo.'); hideBulkProcessing(); return; }
+  bulkData = [];
+  let i = 0;
+  const total = items.length;
+
+  function step() {
+    if (i >= total) {
+      hideBulkProcessing();
+      renderBulkResults();
+      return;
+    }
+    // Process up to 50 at a time to keep UI responsive
+    const chunk = Math.min(50, total - i);
+    for (let j = 0; j < chunk; j++) {
+      const item = items[i + j];
+      const ct   = item.custo + item.envio + item.extras;
+      const row  = {
+        _row: item._row, nome: item.nome || ('Produto ' + (i+j+1)),
+        custo: item.custo, envio: item.envio, extras: item.extras,
+        aliquota: item.aliquota, margem: item.margem, custoTotal: ct,
+        results: {}
+      };
+      ['shopee','mercadolivre','tiktok','shein'].forEach(function(mp) {
+        row.results[mp] = calcIdealPrice(mp, ct, item.margem, item.aliquota);
+      });
+      bulkData.push(row);
+    }
+    i += chunk;
+    const pct = Math.round((i / total) * 100);
+    document.getElementById('bulk-progress-bar').style.width = pct + '%';
+    document.getElementById('bulk-progress-label').textContent = i + ' de ' + total + ' produtos';
+    setTimeout(step, 0);
+  }
+  step();
+}
+
+function renderBulkResults() {
+  const tbody = document.getElementById('bulk-table-body');
+  tbody.innerHTML = '';
+  bulkData.forEach(function(row, idx) {
+    const mps    = ['shopee','mercadolivre','tiktok','shein'];
+    const prices = mps.map(function(mp){ return row.results[mp].price; });
+    const minP   = Math.min.apply(null, prices.filter(function(p){ return p > 0; }));
+    const tr = document.createElement('tr');
+    let cells = '<td class="row-num">' + (idx+1) + '</td>';
+    cells += '<td class="td-name">' + escHtml(row.nome) + '</td>';
+    cells += '<td class="td-custo">' + fmtBRL(row.custo) + '</td>';
+    cells += '<td class="td-custo">' + row.margem + '%</td>';
+    mps.forEach(function(mp) {
+      const r    = row.results[mp];
+      const best = r.price > 0 && Math.abs(r.price - minP) < 0.01;
+      const pct  = r.price > 0 ? ((r.lucro / r.price) * 100).toFixed(1).replace('.',',') + '%' : '—';
+      cells += '<td class="td-best">' +
+        '<div class="td-price" style="color:' + (best ? 'var(--green)' : 'var(--text)') + '">' +
+          fmtBRL(r.price) + (best ? '<span class="best-pill">✦</span>' : '') +
+        '</div>' +
+        '<div class="td-lucro" style="color:' + (r.lucro >= 0 ? 'var(--green)' : 'var(--red)') + '">' +
+          (r.lucro >= 0 ? '▲' : '▼') + ' ' + fmtBRL(Math.abs(r.lucro)) + ' (' + pct + ')' +
+        '</div>' +
+      '</td>';
+    });
+    tr.innerHTML = cells;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('bulk-results-meta').textContent = bulkData.length + ' produto(s) processado(s)';
+  document.getElementById('bulk-results-wrap').style.display = '';
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── EXPORT CSV ──────────────────────────────────────────────────────────────
+function exportBulkCSV() {
+  if (!bulkData.length) return;
+  const mps  = ['shopee','mercadolivre','tiktok','shein'];
+  const mpNames = { shopee:'Shopee', mercadolivre:'Mercado Livre', tiktok:'TikTok Shop', shein:'Shein' };
+  const headers = ['#','Nome','Custo (R$)','Envio (R$)','Extras (R$)','Alíquota (%)','Margem (%)'];
+  mps.forEach(function(mp) {
+    headers.push(mpNames[mp] + ' - Preço Venda');
+    headers.push(mpNames[mp] + ' - Lucro (R$)');
+    headers.push(mpNames[mp] + ' - Comissão (R$)');
+    headers.push(mpNames[mp] + ' - Imposto (R$)');
+  });
+  const csvLines = [headers.map(csvCell).join(',')];
+  bulkData.forEach(function(row, i) {
+    const cols = [i+1, row.nome, row.custo, row.envio, row.extras, row.aliquota, row.margem];
+    mps.forEach(function(mp) {
+      const r = row.results[mp];
+      cols.push(r.price.toFixed(2), r.lucro.toFixed(2), r.com.toFixed(2), r.imposto.toFixed(2));
+    });
+    csvLines.push(cols.map(csvCell).join(','));
+  });
+  const bom  = '\uFEFF';
+  const blob = new Blob([bom + csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  downloadBlob(blob, 'priceiq-precificacao-massa.csv');
+  showToast('⬇️ CSV exportado!');
+}
+
+function csvCell(v) {
+  const s = String(v);
+  return (s.includes(',') || s.includes('"') || s.includes('\n')) ? '"' + s.replace(/"/g,'""') + '"' : s;
+}
+
+// ── EXPORT XLSX ─────────────────────────────────────────────────────────────
+function exportBulkXLSX() {
+  if (!bulkData.length) return;
+  if (typeof XLSX === 'undefined') {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = function() { doExportXLSX(); };
+    s.onerror = function() { showToast('❌ Falha ao carregar exportador XLSX. Use CSV.'); };
+    document.head.appendChild(s);
+  } else { doExportXLSX(); }
+}
+
+function doExportXLSX() {
+  const mps     = ['shopee','mercadolivre','tiktok','shein'];
+  const mpNames = { shopee:'Shopee', mercadolivre:'Mercado Livre', tiktok:'TikTok Shop', shein:'Shein' };
+  const aoa     = [['#','Nome','Custo (R$)','Envio (R$)','Extras (R$)','Alíquota (%)','Margem (%)']];
+  mps.forEach(function(mp) {
+    aoa[0].push(mpNames[mp]+' Preço', mpNames[mp]+' Lucro', mpNames[mp]+' Comissão', mpNames[mp]+' Imposto');
+  });
+  bulkData.forEach(function(row, i) {
+    const line = [i+1, row.nome, row.custo, row.envio, row.extras, row.aliquota, row.margem];
+    mps.forEach(function(mp) {
+      const r = row.results[mp];
+      line.push(parseFloat(r.price.toFixed(2)), parseFloat(r.lucro.toFixed(2)),
+                parseFloat(r.com.toFixed(2)),   parseFloat(r.imposto.toFixed(2)));
+    });
+    aoa.push(line);
+  });
+  const wb  = XLSX.utils.book_new();
+  const ws  = XLSX.utils.aoa_to_sheet(aoa);
+  // Column widths
+  ws['!cols'] = [
+    {wch:4},{wch:28},{wch:11},{wch:11},{wch:11},{wch:11},{wch:11},
+    {wch:14},{wch:14},{wch:14},{wch:14},
+    {wch:16},{wch:14},{wch:14},{wch:14},
+    {wch:14},{wch:14},{wch:14},{wch:14},
+    {wch:12},{wch:14},{wch:14},{wch:14},
+  ];
+  XLSX.utils.book_append_sheet(wb, ws, 'Precificação');
+  XLSX.writeFile(wb, 'priceiq-precificacao-massa.xlsx');
+  showToast('⬇️ XLSX exportado!');
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a   = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+
+// ── TEMPLATE CSV DOWNLOAD ───────────────────────────────────────────────────
+function downloadTemplate() {
+  const csv = 'nome,custo,envio,extras,aliquota,margem\n' +
+    'Camiseta Básica,15.00,0,0,6,20\n' +
+    'Tênis Casual,45.00,5,0,6,25\n' +
+    'Mochila Escolar,38.50,0,2,6,30\n' +
+    'Caneca Personalizada,8.00,0,0,6,20\n';
+  const bom  = '\uFEFF';
+  const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+  downloadBlob(blob, 'modelo-priceiq.csv');
+  showToast('⬇️ Modelo CSV baixado!');
+}
 </script>
 </body>
 </html>

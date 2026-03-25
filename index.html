@@ -316,6 +316,35 @@
   .bulk-progress-bar { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent3)); border-radius:3px; transition:width 0.3s ease; }
   .bulk-error-row td { color:var(--red) !important; font-size:12px; }
   .row-num { color:var(--text3); font-size:11px; width:32px; text-align:right; }
+
+  /* SHOPEE FAIXA BADGES */
+  .faixa-badge {
+    display:inline-block; font-size:9px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase;
+    padding:2px 6px; border-radius:5px; margin-left:5px;
+    vertical-align:middle; white-space:nowrap;
+  }
+  .faixa-1 { background:rgba(0,212,170,0.15);  color:#00d4aa; border:1px solid rgba(0,212,170,0.3);  }
+  .faixa-2 { background:rgba(79,138,255,0.15); color:#4f8aff; border:1px solid rgba(79,138,255,0.3); }
+  .faixa-3 { background:rgba(255,184,48,0.15); color:#ffb830; border:1px solid rgba(255,184,48,0.3); }
+  .faixa-4 { background:rgba(255,124,77,0.15); color:#ff7c4d; border:1px solid rgba(255,124,77,0.3); }
+  .faixa-5 { background:rgba(255,84,112,0.15); color:#ff5470; border:1px solid rgba(255,84,112,0.3); }
+
+  /* PRINT STYLES */
+  @media print {
+    header, .hero, .tabs, #bulk-config-card, .drop-zone,
+    .bulk-template-hint, .btn, .bulk-results-header > div:last-child,
+    .toast { display:none !important; }
+    body { background:#fff !important; color:#000 !important; font-size:11px; }
+    .bulk-table-wrap { border:1px solid #ccc; border-radius:0; }
+    .bulk-table th { background:#f0f0f0 !important; color:#333 !important; }
+    .bulk-table td { color:#000 !important; border-bottom:1px solid #e0e0e0; }
+    .td-price { color:#000 !important; font-size:12px; }
+    .td-lucro { color:#000 !important; }
+    .best-pill { background:#d4edda !important; color:#155724 !important; border:1px solid #c3e6cb !important; }
+    .faixa-badge { border:1px solid #999 !important; color:#333 !important; background:#f5f5f5 !important; }
+    .bulk-results-title { font-size:16px; font-weight:bold; margin-bottom:8px; }
+  }
 </style>
 </head>
 <body>
@@ -756,6 +785,7 @@
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
               <button class="btn btn-outline btn-sm" onclick="exportBulkCSV()">⬇️ Exportar CSV</button>
               <button class="btn btn-primary btn-sm" onclick="exportBulkXLSX()">⬇️ Exportar XLSX</button>
+              <button class="btn btn-ghost btn-sm" onclick="printBulkTable()">🖨️ Imprimir</button>
             </div>
           </div>
           <div class="bulk-table-wrap">
@@ -1624,6 +1654,14 @@ function processBulk(items) {
   step();
 }
 
+// Shopee faixa badge helper
+const FAIXA_LABELS = ['Faixa 1', 'Faixa 2', 'Faixa 3', 'Faixa 4', 'Faixa 5'];
+
+function getShopeeFaixaBadge(price) {
+  const idx = getShopeeTierIndex(price);
+  return '<span class="faixa-badge faixa-' + (idx+1) + '">' + FAIXA_LABELS[idx] + '</span>';
+}
+
 function renderBulkResults() {
   const tbody = document.getElementById('bulk-table-body');
   tbody.innerHTML = '';
@@ -1640,9 +1678,13 @@ function renderBulkResults() {
       const r    = row.results[mp];
       const best = r.price > 0 && Math.abs(r.price - minP) < 0.01;
       const pct  = r.price > 0 ? ((r.lucro / r.price) * 100).toFixed(1).replace('.',',') + '%' : '—';
+      // Shopee: show faixa badge based on the calculated price
+      const faixaBadge = (mp === 'shopee' && r.price > 0) ? getShopeeFaixaBadge(r.price) : '';
       cells += '<td class="td-best">' +
         '<div class="td-price" style="color:' + (best ? 'var(--green)' : 'var(--text)') + '">' +
-          fmtBRL(r.price) + (best ? '<span class="best-pill">✦</span>' : '') +
+          fmtBRL(r.price) +
+          faixaBadge +
+          (best ? '<span class="best-pill">✦</span>' : '') +
         '</div>' +
         '<div class="td-lucro" style="color:' + (r.lucro >= 0 ? 'var(--green)' : 'var(--red)') + '">' +
           (r.lucro >= 0 ? '▲' : '▼') + ' ' + fmtBRL(Math.abs(r.lucro)) + ' (' + pct + ')' +
@@ -1658,6 +1700,42 @@ function renderBulkResults() {
 
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── PRINT TABLE ─────────────────────────────────────────────────────────────
+function printBulkTable() {
+  if (!bulkData.length) return;
+  const nome = (document.getElementById('nome_produto')?.value || '').trim();
+  const tableEl = document.querySelector('.bulk-table');
+  if (!tableEl) return;
+
+  const win = window.open('', '_blank', 'width=1100,height=700');
+  win.document.write('<!DOCTYPE html><html lang="pt-BR"><head>');
+  win.document.write('<meta charset="UTF-8"/>');
+  win.document.write('<title>PriceIQ — Precificação em Massa</title>');
+  win.document.write('<style>');
+  win.document.write('*{box-sizing:border-box;margin:0;padding:0}');
+  win.document.write('body{font-family:Arial,sans-serif;padding:24px;color:#111;font-size:12px}');
+  win.document.write('h1{font-size:18px;margin-bottom:4px;color:#0b0f1a}');
+  win.document.write('.meta{font-size:11px;color:#666;margin-bottom:20px}');
+  win.document.write('table{width:100%;border-collapse:collapse;font-size:11px}');
+  win.document.write('th{background:#f0f0f0;text-align:left;padding:8px 10px;border:1px solid #ccc;font-size:10px;text-transform:uppercase;letter-spacing:0.3px}');
+  win.document.write('td{padding:7px 10px;border:1px solid #ddd;vertical-align:top}');
+  win.document.write('tr:nth-child(even) td{background:#fafafa}');
+  win.document.write('.td-price{font-weight:700;font-size:13px}');
+  win.document.write('.td-lucro{font-size:10px;color:#444;margin-top:2px}');
+  win.document.write('.best-pill{display:inline-block;background:#d4edda;color:#155724;font-size:9px;font-weight:800;padding:1px 5px;border-radius:4px;margin-left:4px;border:1px solid #c3e6cb}');
+  win.document.write('.faixa-badge{display:inline-block;font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;border:1px solid #bbb;background:#f0f0f0;color:#333}');
+  win.document.write('.footer{margin-top:20px;font-size:10px;color:#999;text-align:right}');
+  win.document.write('</style></head><body>');
+  win.document.write('<h1>📊 PriceIQ — Precificação em Massa</h1>');
+  win.document.write('<div class="meta">' + bulkData.length + ' produto(s) · Gerado em ' + new Date().toLocaleString('pt-BR') + '</div>');
+  win.document.write(tableEl.outerHTML);
+  win.document.write('<div class="footer">Pack de Ferramentas do Nayder</div>');
+  win.document.write('</body></html>');
+  win.document.close();
+  win.focus();
+  setTimeout(function(){ win.print(); }, 400);
 }
 
 // ── EXPORT CSV ──────────────────────────────────────────────────────────────

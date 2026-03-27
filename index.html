@@ -4,6 +4,18 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>PriceIQ — Calculadora de Precificação para Marketplaces</title>
+<!-- Google Analytics GA4 – G-BPWZQ2PZET -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BPWZQ2PZET"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BPWZQ2PZET', {
+    send_page_view: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+</script>
+<!-- / Google Analytics GA4 -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
@@ -1179,6 +1191,7 @@ function updateMPInfo() {
 // TABS
 // ============================
 function switchTab(tab) {
+  if (typeof gtag !== 'undefined') gtag('event', 'tab_view', { tab_name: tab });
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(`tab-${tab}`).classList.add('active');
@@ -1196,6 +1209,7 @@ function updateRangeDisplay() { setTxt('margem-display', getVal('margem_lucro'))
 // COPY
 // ============================
 function copiarResultado() {
+  if (typeof gtag !== 'undefined') gtag('event', 'copy_result', { marketplace: currentMP });
   const r    = lastResult;
   const icon = mpInfo[currentMP]?.icon || '';
   const mp   = mpInfo[currentMP]?.name || currentMP;
@@ -1235,6 +1249,7 @@ function copyToClipboard(txt, msg) {
 }
 
 function copiarComparador() {
+  if (typeof gtag !== 'undefined') gtag('event', 'copy_comparator');
   const nome     = (document.getElementById('nome_produto').value || '').trim();
   const margem   = getVal('margem_lucro');
   const aliquota = getVal('aliquota');
@@ -1276,6 +1291,7 @@ function copiarComparador() {
 // SAVE / LOAD
 // ============================
 function salvarSimulacao() {
+  if (typeof gtag !== 'undefined') gtag('event', 'save_simulation', { marketplace: currentMP });
   const saved = JSON.parse(localStorage.getItem('priceiq_saves')||'[]');
   const r = lastResult;
   const nome = (document.getElementById('nome_produto').value || '').trim();
@@ -1321,6 +1337,7 @@ function buildShareText(s) {
 
 function shareWhatsApp(id, e) {
   e.stopPropagation();
+  if (typeof gtag !== 'undefined') gtag('event', 'share_whatsapp');
   const s = JSON.parse(localStorage.getItem('priceiq_saves')||'[]').find(x => x.id === id);
   if (!s) return;
   const txt = buildShareText(s);
@@ -1705,6 +1722,7 @@ function escHtml(s) {
 // ── PRINT TABLE ─────────────────────────────────────────────────────────────
 function printBulkTable() {
   if (!bulkData.length) return;
+  if (typeof gtag !== 'undefined') gtag('event', 'print_bulk', { rows: bulkData.length });
   const nome = (document.getElementById('nome_produto')?.value || '').trim();
   const tableEl = document.querySelector('.bulk-table');
   if (!tableEl) return;
@@ -1741,6 +1759,7 @@ function printBulkTable() {
 // ── EXPORT CSV ──────────────────────────────────────────────────────────────
 function exportBulkCSV() {
   if (!bulkData.length) return;
+  if (typeof gtag !== 'undefined') gtag('event', 'export_bulk', { format: 'csv', rows: bulkData.length });
   const mps  = ['shopee','mercadolivre','tiktok','shein'];
   const mpNames = { shopee:'Shopee', mercadolivre:'Mercado Livre', tiktok:'TikTok Shop', shein:'Shein' };
   const headers = ['#','Nome','Custo (R$)','Envio (R$)','Extras (R$)','Alíquota (%)','Margem (%)'];
@@ -1773,6 +1792,7 @@ function csvCell(v) {
 // ── EXPORT XLSX ─────────────────────────────────────────────────────────────
 function exportBulkXLSX() {
   if (!bulkData.length) return;
+  if (typeof gtag !== 'undefined') gtag('event', 'export_bulk', { format: 'xlsx', rows: bulkData.length });
   if (typeof XLSX === 'undefined') {
     const s = document.createElement('script');
     s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- SEO -->
+<title>Como Usar o PriceIQ — Guia Completo de Precificação para Marketplaces</title>
+<meta name="description" content="Aprenda a usar o PriceIQ para calcular o preço ideal de venda nos marketplaces Shopee, Mercado Livre, TikTok Shop e Shein. Guia passo a passo com exemplos práticos e dicas para vender com mais lucro." />
+<meta name="keywords" content="como precificar produtos, calculadora de preço marketplace, Shopee como calcular, Mercado Livre comissão, precificação e-commerce, margem de lucro marketplace, PriceIQ como usar" />
+<meta name="author" content="Pack de Ferramentas do Nayder" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="como-usar.html" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Como Usar o PriceIQ — Guia de Precificação para Marketplaces" />
+<meta property="og:description" content="Guia completo para calcular preço ideal de venda na Shopee, Mercado Livre, TikTok Shop e Shein com lucro garantido." />
+<meta property="og:type" content="article" />
+<meta property="og:locale" content="pt_BR" />
+
+<!-- Google Analytics GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BPWZQ2PZET"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BPWZQ2PZET', { send_page_view: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+<!-- / Google Analytics GA4 -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0f1a; --bg2: #111624; --bg3: #161d2e;
+    --card: #1a2235; --card2: #1f2940;
+    --border: #2a3550; --border2: #35446a;
+    --accent: #4f8aff; --accent2: #7b5ea7; --accent3: #00d4aa;
+    --accent-glow: rgba(79,138,255,0.15);
+    --text: #e8edf8; --text2: #8fa4c8; --text3: #5a6e90;
+    --green: #00d4aa; --red: #ff5470; --yellow: #ffb830; --orange: #ff7c4d;
+    --shopee: #f5793b; --tiktok: #ff004f;
+    --radius: 14px; --radius-sm: 8px;
+    --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; line-height: 1.7; }
+  body::before { content:''; position:fixed; top:-200px; left:-200px; width:700px; height:700px; background:radial-gradient(circle,rgba(79,138,255,0.07) 0%,transparent 70%); pointer-events:none; z-index:0; }
+  body::after  { content:''; position:fixed; bottom:-200px; right:-200px; width:600px; height:600px; background:radial-gradient(circle,rgba(0,212,170,0.06) 0%,transparent 70%); pointer-events:none; z-index:0; }
+
+  /* ── HEADER ── */
+  header { position:sticky; top:0; z-index:100; background:rgba(11,15,26,0.88); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:0 24px; }
+  .header-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:64px; gap:12px; flex-wrap:wrap; }
+  .logo { display:flex; align-items:center; gap:10px; font-family:'Syne',sans-serif; font-size:20px; font-weight:800; letter-spacing:-0.5px; color:var(--text); text-decoration:none; }
+  .logo-icon { width:32px; height:32px; background:linear-gradient(135deg,var(--accent),var(--accent3)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .logo span { color:var(--accent); }
+  .header-badge { background:var(--accent-glow); border:1px solid rgba(79,138,255,0.3); color:var(--accent); font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; letter-spacing:0.5px; }
+  .header-nav { display:flex; align-items:center; gap:10px; }
+  .nav-link { color:var(--text2); font-size:13px; font-weight:500; text-decoration:none; padding:6px 12px; border-radius:8px; transition:0.2s; }
+  .nav-link:hover { color:var(--text); background:var(--bg3); }
+  .nav-link.active { color:var(--accent); }
+
+  .wa-group-btn { display:inline-flex; align-items:center; gap:7px; background:linear-gradient(135deg,#25D366,#128C7E); color:#fff; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700; padding:6px 14px; border-radius:20px; border:none; cursor:pointer; text-decoration:none; box-shadow:0 2px 12px rgba(37,211,102,0.35); transition:all 0.2s; white-space:nowrap; }
+  .wa-group-btn:hover { transform:translateY(-1px); box-shadow:0 4px 18px rgba(37,211,102,0.5); }
+  @media(max-width:540px){ .wa-group-btn span { display:none; } .wa-group-btn { padding:6px 10px; } .nav-link { padding:5px 8px; font-size:12px; } }
+
+  /* ── LAYOUT ── */
+  .page-wrap { max-width:860px; margin:0 auto; padding:0 20px 80px; position:relative; z-index:1; }
+
+  /* ── HERO ── */
+  .page-hero { text-align:center; padding:60px 0 48px; }
+  .page-hero-tag { display:inline-flex; align-items:center; gap:6px; background:rgba(79,138,255,0.1); border:1px solid rgba(79,138,255,0.25); color:var(--accent); font-size:12px; font-weight:600; letter-spacing:0.8px; padding:5px 14px; border-radius:20px; margin-bottom:22px; text-transform:uppercase; }
+  .page-hero h1 { font-family:'Syne',sans-serif; font-size:clamp(30px,5vw,52px); font-weight:800; line-height:1.1; letter-spacing:-1.5px; margin-bottom:18px; }
+  .page-hero h1 em { font-style:normal; background:linear-gradient(90deg,var(--accent),var(--accent3)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .page-hero p { color:var(--text2); font-size:17px; max-width:600px; margin:0 auto 32px; line-height:1.65; }
+  .cta-primary { display:inline-flex; align-items:center; gap:9px; background:linear-gradient(135deg,var(--accent),#3a7bff); color:#fff; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; padding:14px 28px; border-radius:12px; text-decoration:none; box-shadow:0 6px 24px rgba(79,138,255,0.35); transition:all 0.2s; letter-spacing:0.1px; }
+  .cta-primary:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(79,138,255,0.45); }
+
+  /* ── SECTIONS ── */
+  section { margin-bottom:56px; }
+  .section-label { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--accent3); margin-bottom:12px; }
+  .section-label::before { content:''; display:block; width:16px; height:2px; background:var(--accent3); border-radius:2px; }
+  h2 { font-family:'Syne',sans-serif; font-size:clamp(22px,3.5vw,32px); font-weight:800; letter-spacing:-0.8px; margin-bottom:16px; line-height:1.2; }
+  h3 { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin-bottom:10px; letter-spacing:-0.3px; }
+  p { color:var(--text2); font-size:15px; margin-bottom:14px; }
+  p:last-child { margin-bottom:0; }
+  strong { color:var(--text); font-weight:600; }
+
+  /* ── CARDS ── */
+  .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:28px; }
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
+  .mini-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px; }
+  .mini-card-icon { font-size:28px; margin-bottom:12px; }
+  .mini-card h3 { font-size:15px; margin-bottom:6px; }
+  .mini-card p { font-size:13px; color:var(--text3); margin-bottom:0; }
+
+  /* ── STEPS ── */
+  .steps { display:flex; flex-direction:column; gap:0; }
+  .step { display:grid; grid-template-columns:56px 1fr; gap:0 20px; position:relative; }
+  .step:not(:last-child)::before { content:''; position:absolute; left:27px; top:56px; width:2px; bottom:0; background:linear-gradient(to bottom,var(--border2),transparent); }
+  .step-num { width:56px; height:56px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border-radius:14px; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:#fff; flex-shrink:0; margin-bottom:28px; box-shadow:0 4px 16px rgba(79,138,255,0.25); }
+  .step-body { padding-top:10px; padding-bottom:32px; }
+  .step-body h3 { font-size:17px; margin-bottom:8px; color:var(--text); }
+  .step-body p { font-size:14px; color:var(--text2); margin-bottom:0; }
+
+  /* ── EXAMPLE BOX ── */
+  .example-box { background:var(--bg2); border:1px solid var(--border2); border-radius:var(--radius); padding:24px 28px; }
+  .example-box .ex-label { font-size:10px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:var(--accent3); margin-bottom:16px; display:flex; align-items:center; gap:6px; }
+  .example-box .ex-label::before { content:''; width:12px; height:12px; background:var(--accent3); border-radius:50%; opacity:0.7; }
+  .ex-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+  @media(max-width:540px){ .ex-grid { grid-template-columns:1fr; } }
+  .ex-item { background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:14px; }
+  .ex-item-label { font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:var(--text3); margin-bottom:5px; }
+  .ex-item-val { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--text); }
+  .ex-item-val.green { color:var(--green); }
+  .ex-item-val.accent { color:var(--accent); }
+  .ex-result { background:var(--card2); border:1px solid var(--border2); border-radius:10px; padding:18px 20px; }
+  .ex-result-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid rgba(42,53,80,0.5); font-size:14px; color:var(--text2); }
+  .ex-result-row:last-child { border-bottom:none; font-weight:700; font-size:15px; color:var(--text); }
+  .ex-result-row span:last-child { font-family:'Syne',sans-serif; font-weight:700; }
+  .ex-result-row .pos { color:var(--green); }
+  .ex-result-row .neg { color:var(--red); }
+
+  /* ── TIPS ── */
+  .tips-list { display:flex; flex-direction:column; gap:12px; }
+  .tip { display:flex; gap:14px; align-items:flex-start; background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .tip-icon { font-size:22px; flex-shrink:0; margin-top:2px; }
+  .tip-text h3 { font-size:15px; margin-bottom:4px; color:var(--text); }
+  .tip-text p { font-size:13px; color:var(--text3); margin-bottom:0; }
+
+  /* ── MP PILLS ── */
+  .mp-pills { display:flex; flex-wrap:wrap; gap:10px; margin:20px 0; }
+  .mp-pill { display:inline-flex; align-items:center; gap:6px; background:var(--bg3); border:1px solid var(--border2); border-radius:10px; padding:8px 14px; font-size:13px; font-weight:600; color:var(--text2); }
+
+  /* ── TABLE ── */
+  .rate-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .rate-table th { text-align:left; padding:10px 14px; background:var(--bg3); border-bottom:1px solid var(--border); font-size:11px; font-weight:700; letter-spacing:0.4px; text-transform:uppercase; color:var(--text3); }
+  .rate-table td { padding:10px 14px; border-bottom:1px solid rgba(42,53,80,0.5); color:var(--text2); vertical-align:middle; }
+  .rate-table tr:last-child td { border-bottom:none; }
+  .rate-table .mp-name { font-weight:600; color:var(--text); display:flex; align-items:center; gap:6px; }
+
+  /* ── DIVIDER ── */
+  .divider { height:1px; background:linear-gradient(to right,transparent,var(--border2),transparent); margin:48px 0; }
+
+  /* ── CTA SECTION ── */
+  .cta-section { background:linear-gradient(135deg,var(--card2),var(--card)); border:1px solid var(--border2); border-radius:20px; padding:48px 40px; text-align:center; position:relative; overflow:hidden; }
+  .cta-section::before { content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px; background:radial-gradient(circle,rgba(79,138,255,0.15) 0%,transparent 70%); }
+  .cta-section::after { content:''; position:absolute; bottom:-60px; left:-60px; width:200px; height:200px; background:radial-gradient(circle,rgba(0,212,170,0.1) 0%,transparent 70%); }
+  .cta-section h2 { font-size:clamp(22px,3vw,32px); margin-bottom:12px; }
+  .cta-section p { font-size:15px; color:var(--text2); max-width:480px; margin:0 auto 28px; }
+  .cta-row { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; position:relative; z-index:1; }
+
+  /* ── FOOTER ── */
+  footer { border-top:1px solid var(--border); padding:24px; text-align:center; font-size:12px; color:var(--text3); }
+
+  /* ── SCROLL PROGRESS ── */
+  .scroll-bar { position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg,var(--accent),var(--accent3)); z-index:200; transition:width 0.1s; width:0%; }
+
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+
+  @media(max-width:600px){
+    .page-hero { padding:40px 0 32px; }
+    .card { padding:20px; }
+    .cta-section { padding:32px 20px; }
+    .step-num { width:44px; height:44px; font-size:16px; }
+  }
+
+  /* INLINE CODE */
+  code { background:var(--bg3); border:1px solid var(--border); border-radius:5px; padding:1px 7px; font-family:monospace; font-size:12px; color:var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scroll-bar"></div>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <div class="logo-icon">💰</div>Price<span>IQ</span>
+    </a>
+    <div class="header-badge">BETA</div>
+    <nav class="header-nav">
+      <a class="nav-link" href="index.html">Ferramenta</a>
+      <a class="nav-link active" href="como-usar.html">Como Usar</a>
+      <a class="wa-group-btn" href="https://chat.whatsapp.com/DpZLiJzuct14jsR5Bkvt6g" target="_blank" rel="noopener noreferrer" onclick="if(typeof gtag!=='undefined')gtag('event','click_wa_group',{page:'como-usar'});">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.978-1.41A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/><path d="M17.006 14.57c-.275-.138-1.628-.803-1.88-.895-.25-.092-.433-.138-.615.138-.183.275-.708.895-.868 1.079-.16.183-.32.206-.595.069-.275-.138-1.16-.428-2.21-1.364-.817-.729-1.369-1.629-1.53-1.904-.16-.275-.017-.424.12-.561.124-.123.275-.32.413-.481.138-.16.183-.275.275-.458.092-.184.046-.344-.023-.481-.069-.138-.615-1.483-.843-2.03-.222-.533-.448-.46-.615-.469l-.524-.009c-.183 0-.48.069-.73.344-.252.275-.962.94-.962 2.29 0 1.35.985 2.656 1.123 2.839.138.184 1.938 2.96 4.697 4.15.656.283 1.168.452 1.567.579.658.209 1.258.18 1.731.109.528-.079 1.628-.666 1.857-1.309.229-.642.229-1.193.16-1.309-.068-.115-.251-.183-.526-.32z" fill="#128C7E"/></svg>
+        <span>Grupo Exclusivo</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+  <!-- ── HERO ── -->
+  <div class="page-hero">
+    <div class="page-hero-tag">📖 Guia completo</div>
+    <h1>Como usar a <em>ferramenta</em><br/>de precificação</h1>
+    <p>Tudo que você precisa saber para calcular o preço ideal de venda nos principais marketplaces do Brasil e vender com margem de lucro real.</p>
+    <a class="cta-primary" href="index.html" onclick="if(typeof gtag!=='undefined')gtag('event','cta_click',{location:'hero'});">
+      ⚡ Usar a Ferramenta Agora
+    </a>
+  </div>
+
+  <!-- ── O QUE FAZ ── -->
+  <section aria-labelledby="o-que-faz">
+    <div class="section-label">O que é</div>
+    <h2 id="o-que-faz">O que o PriceIQ faz por você</h2>
+    <p>O PriceIQ é uma <strong>calculadora profissional de precificação para marketplaces</strong> que resolve um dos maiores problemas de quem vende online: descobrir exatamente qual deve ser o preço de venda de um produto para cobrir todos os custos, pagar as taxas da plataforma, recolher impostos e ainda sobrar o lucro que você deseja.</p>
+    <p>Diferente de uma planilha genérica, o PriceIQ já tem embutidas as <strong>taxas reais e atualizadas</strong> de cada marketplace — incluindo as faixas dinâmicas da Shopee — e calcula tudo em tempo real enquanto você digita.</p>
+
+    <div class="card-grid" style="margin-top:24px;">
+      <div class="mini-card">
+        <div class="mini-card-icon">⚡</div>
+        <h3>Cálculo em tempo real</h3>
+        <p>O resultado atualiza instantaneamente a cada alteração nos campos.</p>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-icon">🎯</div>
+        <h3>Taxas reais por plataforma</h3>
+        <p>Comissões, taxas fixas e faixas dinâmicas já configuradas e editáveis.</p>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-icon">📊</div>
+        <h3>Comparador entre plataformas</h3>
+        <p>Veja qual marketplace exige o menor preço de venda para o mesmo lucro.</p>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-icon">⚙️</div>
+        <h3>Precificação em massa</h3>
+        <p>Suba um arquivo CSV ou XLSX e processe centenas de produtos de uma vez.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PARA QUEM ── -->
+  <section aria-labelledby="para-quem">
+    <div class="section-label">Público-alvo</div>
+    <h2 id="para-quem">Para quem é útil</h2>
+    <p>O PriceIQ foi desenvolvido para qualquer pessoa que vende ou quer vender em marketplaces brasileiros:</p>
+    <div class="tips-list" style="margin-top:8px;">
+      <div class="tip">
+        <span class="tip-icon">🏪</span>
+        <div class="tip-text">
+          <h3>Vendedores iniciantes</h3>
+          <p>Que ainda não entendem bem as taxas dos marketplaces e têm medo de precificar errado e vender no prejuízo.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">📦</span>
+        <div class="tip-text">
+          <h3>Lojistas experientes com múltiplos produtos</h3>
+          <p>Que precisam precificar dezenas ou centenas de SKUs rapidamente usando o módulo de precificação em massa.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">📈</span>
+        <div class="tip-text">
+          <h3>Consultores e gestores de marketplace</h3>
+          <p>Que gerenciam lojas de clientes e precisam apresentar simulações de precificação de forma profissional.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">🔄</span>
+        <div class="tip-text">
+          <h3>Quem migra de plataforma</h3>
+          <p>Que quer comparar o impacto das taxas entre Shopee, Mercado Livre, TikTok Shop e Shein antes de decidir onde vender.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── PLATAFORMAS ── -->
+  <section aria-labelledby="plataformas">
+    <div class="section-label">Marketplaces</div>
+    <h2 id="plataformas">Plataformas suportadas e suas taxas</h2>
+    <p>O PriceIQ calcula com precisão as taxas de cada marketplace. Veja o resumo das estruturas de cobrança:</p>
+
+    <div class="card" style="margin-top:20px;padding:0;overflow:hidden;">
+      <table class="rate-table">
+        <thead>
+          <tr>
+            <th>Marketplace</th>
+            <th>Estrutura de taxas</th>
+            <th>Observação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mp-name">🛍️ Shopee</span></td>
+            <td>20% (até R$79,99) ou 14% + taxa fixa por faixa</td>
+            <td>Faixas dinâmicas conforme o preço de venda</td>
+          </tr>
+          <tr>
+            <td><span class="mp-name">🛒 Mercado Livre</span></td>
+            <td>19% + R$ 6,00 fixo por venda</td>
+            <td>Taxa fixa independente do valor</td>
+          </tr>
+          <tr>
+            <td><span class="mp-name">🎵 TikTok Shop</span></td>
+            <td>12% de comissão + 5% de afiliados</td>
+            <td>Total efetivo de 17% sobre o valor de venda</td>
+          </tr>
+          <tr>
+            <td><span class="mp-name">👗 Shein</span></td>
+            <td>16% de comissão</td>
+            <td>Sem taxa fixa adicional</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:12px;font-size:12px;color:var(--text3);">💡 Todas as taxas são editáveis no <strong style="color:var(--text2)">Modo Avançado</strong> caso você tenha negociações próprias com as plataformas.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── PASSO A PASSO ── -->
+  <section aria-labelledby="passo-a-passo">
+    <div class="section-label">Tutorial</div>
+    <h2 id="passo-a-passo">Passo a passo para calcular seu preço ideal</h2>
+    <p style="margin-bottom:32px;">Siga os passos abaixo na aba <strong>⚙️ Calculadora</strong> para obter o preço de venda ideal para qualquer produto.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Escolha o marketplace</h3>
+          <p>Selecione a plataforma onde você vai vender: Shopee, Mercado Livre, TikTok Shop ou Shein. As taxas serão carregadas automaticamente. Você pode trocar o marketplace a qualquer momento e ver o preço atualizar em tempo real.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Informe o nome do produto (opcional)</h3>
+          <p>Dê um nome ao produto para identificá-lo ao salvar ou compartilhar a simulação. Esse campo é opcional, mas deixa o resultado muito mais organizado.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Preencha os custos</h3>
+          <p>Insira o <strong>custo do produto</strong> (valor que você paga pelo item ou fabricação), o <strong>custo de envio</strong> (frete que você arca) e eventuais <strong>taxas extras</strong> como embalagem e mão de obra. O sistema soma tudo automaticamente como custo total.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Defina sua margem de lucro desejada</h3>
+          <p>Use o slider para definir o percentual de lucro que você quer obter sobre o preço de venda. Por exemplo: <strong>20%</strong> significa que de cada R$100 vendidos, R$20 são seu lucro líquido depois de todos os descontos.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>Informe a alíquota tributária</h3>
+          <p>Digite o percentual de imposto que incide sobre o seu faturamento. Para quem está no <strong>Simples Nacional</strong>, o valor costuma ficar entre 4% e 8% dependendo do faturamento. Se tiver dúvidas, consulte seu contador.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <h3>Leia o resultado</h3>
+          <p>O PriceIQ mostra o <strong>preço ideal de venda</strong>, o detalhamento de cada desconto (comissão, taxa fixa, impostos), a receita líquida e o <strong>lucro líquido</strong> em reais. A barra de margem mostra graficamente quanto do preço final representa seu lucro real.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── EXEMPLO PRÁTICO ── -->
+  <section aria-labelledby="exemplo">
+    <div class="section-label">Exemplo real</div>
+    <h2 id="exemplo">Exemplo prático de uso</h2>
+    <p>Veja como calcular o preço ideal de uma <strong>camiseta básica</strong> sendo vendida na Shopee, com custo de produção de R$ 18,00 e margem desejada de 25%.</p>
+
+    <div class="example-box" style="margin-top:24px;">
+      <div class="ex-label">Dados de entrada</div>
+      <div class="ex-grid">
+        <div class="ex-item">
+          <div class="ex-item-label">Marketplace</div>
+          <div class="ex-item-val" style="font-size:16px;">🛍️ Shopee</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-item-label">Custo do produto</div>
+          <div class="ex-item-val">R$ 18,00</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-item-label">Custo de envio</div>
+          <div class="ex-item-val">R$ 0,00</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-item-label">Taxas extras</div>
+          <div class="ex-item-val">R$ 2,00</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-item-label">Margem desejada</div>
+          <div class="ex-item-val accent">25%</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-item-label">Alíquota tributária</div>
+          <div class="ex-item-val">6%</div>
+        </div>
+      </div>
+
+      <div class="ex-label" style="margin-top:20px;">Resultado calculado pelo PriceIQ</div>
+      <div class="ex-result">
+        <div class="ex-result-row"><span>Preço ideal de venda</span><span class="accent" style="color:var(--accent);font-size:18px;">R$ 44,44</span></div>
+        <div class="ex-result-row"><span>Comissão Shopee (20% — Faixa 1)</span><span class="neg">−R$ 8,89</span></div>
+        <div class="ex-result-row"><span>Taxa fixa Shopee</span><span class="neg">−R$ 4,00</span></div>
+        <div class="ex-result-row"><span>Impostos (6%)</span><span style="color:var(--yellow)">−R$ 2,67</span></div>
+        <div class="ex-result-row"><span>Receita líquida</span><span style="color:var(--text)">R$ 28,88</span></div>
+        <div class="ex-result-row"><span>✦ Lucro líquido</span><span class="pos">▲ R$ 8,88</span></div>
+      </div>
+
+      <p style="font-size:12px;color:var(--text3);margin-top:14px;">💡 Nesse exemplo o produto cai na <strong style="color:#00d4aa">Faixa 1</strong> da Shopee (até R$79,99): comissão de 20% + R$4 de taxa fixa. Se o preço fosse acima de R$80, a comissão cairia para 14% mas a taxa fixa aumentaria.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── ABAS DA FERRAMENTA ── -->
+  <section aria-labelledby="abas">
+    <div class="section-label">Módulos</div>
+    <h2 id="abas">O que cada aba da ferramenta faz</h2>
+
+    <div class="tips-list" style="margin-top:8px;">
+      <div class="tip">
+        <span class="tip-icon">⚙️</span>
+        <div class="tip-text">
+          <h3>Calculadora</h3>
+          <p>A aba principal. Informe custos, margem, alíquota e marketplace e veja o preço ideal com detalhamento completo em tempo real.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">📊</span>
+        <div class="tip-text">
+          <h3>Comparador</h3>
+          <p>Com os mesmos dados da Calculadora, exibe lado a lado o preço ideal e o lucro esperado nos 4 marketplaces, destacando qual exige o menor preço.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">↩</span>
+        <div class="tip-text">
+          <h3>Simulação Reversa</h3>
+          <p>Informe um preço de venda que você já tem em mente e descubra qual será o lucro real, a margem efetiva, o ponto de equilíbrio e quanto das taxas consome do valor.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">🔧</span>
+        <div class="tip-text">
+          <h3>Modo Avançado</h3>
+          <p>Edite as taxas de cada marketplace conforme acordos comerciais próprios. Inclui suporte à Taxa do Gestor, que você pode habilitar e personalizar.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">⚡</span>
+        <div class="tip-text">
+          <h3>Precificação em Massa</h3>
+          <p>Suba um arquivo <code>.CSV</code> ou <code>.XLSX</code> com vários produtos e receba o preço ideal calculado para todos os 4 marketplaces de uma vez. Exporte os resultados em CSV ou XLSX.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">💾</span>
+        <div class="tip-text">
+          <h3>Simulações Salvas</h3>
+          <p>Salve seus cálculos no navegador para consultar depois. Compartilhe qualquer simulação diretamente no WhatsApp com um toque, usando a barrinha nativa de compartilhamento do celular.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── DICAS ── -->
+  <section aria-labelledby="dicas">
+    <div class="section-label">Boas práticas</div>
+    <h2 id="dicas">Dicas para melhores resultados</h2>
+
+    <div class="tips-list">
+      <div class="tip">
+        <span class="tip-icon">💡</span>
+        <div class="tip-text">
+          <h3>Inclua todos os custos reais no cálculo</h3>
+          <p>Não esqueça de somar embalagem, fita, etiqueta, custo da mão de obra de embalagem e eventuais perdas e devoluções no campo de Taxas Extras. Subestimar os custos é a causa mais comum de prejuízo oculto.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">📐</span>
+        <div class="tip-text">
+          <h3>Use a Simulação Reversa antes de subir o preço</h3>
+          <p>Se você já tem um preço praticado ou um preço concorrente de referência, use a Simulação Reversa para descobrir qual lucro real esse preço gera — antes de se comprometer com ele.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">🔍</span>
+        <div class="tip-text">
+          <h3>Fique atento às faixas da Shopee</h3>
+          <p>Na Shopee, o preço de venda determina a faixa de taxa. Um produto a R$79,99 paga 20% + R$4. O mesmo produto a R$80,00 passa para 14% + R$16. Use o comparador para descobrir qual faixa é mais vantajosa para o seu custo.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">🏷️</span>
+        <div class="tip-text">
+          <h3>Use o Comparador antes de escolher onde anunciar</h3>
+          <p>Um produto pode ser mais lucrativo no TikTok Shop (17% total mas sem taxa fixa) do que na Shopee (14% + taxa fixa), dependendo do preço final. Sempre compare antes de decidir a plataforma principal.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">📁</span>
+        <div class="tip-text">
+          <h3>Para catálogos grandes, use o módulo Em Massa</h3>
+          <p>Prepare um arquivo CSV com todas as colunas: <code>nome</code>, <code>custo</code>, <code>envio</code>, <code>extras</code>, <code>aliquota</code> e <code>margem</code>. Baixe o modelo de exemplo direto na ferramenta para não errar o formato.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">🔧</span>
+        <div class="tip-text">
+          <h3>Personalize as taxas no Modo Avançado</h3>
+          <p>Se você tem um contrato especial com alguma plataforma ou paga comissão de gestor, edite as taxas no Modo Avançado. Elas afetam todos os cálculos em tempo real sem precisar reconfigurar nada.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── CTA FINAL ── -->
+  <section>
+    <div class="cta-section">
+      <h2>Pronto para precificar com <em style="font-style:normal;background:linear-gradient(90deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">inteligência</em>?</h2>
+      <p>Acesse a ferramenta, insira seus dados e descubra em segundos o preço ideal de venda para seu produto em qualquer marketplace.</p>
+      <div class="cta-row">
+        <a class="cta-primary" href="index.html" onclick="if(typeof gtag!=='undefined')gtag('event','cta_click',{location:'bottom'});">
+          ⚡ Abrir o PriceIQ
+        </a>
+        <a class="wa-group-btn" style="padding:13px 20px;font-size:14px;border-radius:12px;" href="https://chat.whatsapp.com/DpZLiJzuct14jsR5Bkvt6g" target="_blank" rel="noopener noreferrer" onclick="if(typeof gtag!=='undefined')gtag('event','click_wa_group',{location:'cta_bottom'});">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.978-1.41A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/><path d="M17.006 14.57c-.275-.138-1.628-.803-1.88-.895-.25-.092-.433-.138-.615.138-.183.275-.708.895-.868 1.079-.16.183-.32.206-.595.069-.275-.138-1.16-.428-2.21-1.364-.817-.729-1.369-1.629-1.53-1.904-.16-.275-.017-.424.12-.561.124-.123.275-.32.413-.481.138-.16.183-.275.275-.458.092-.184.046-.344-.023-.481-.069-.138-.615-1.483-.843-2.03-.222-.533-.448-.46-.615-.469l-.524-.009c-.183 0-.48.069-.73.344-.252.275-.962.94-.962 2.29 0 1.35.985 2.656 1.123 2.839.138.184 1.938 2.96 4.697 4.15.656.283 1.168.452 1.567.579.658.209 1.258.18 1.731.109.528-.079 1.628-.666 1.857-1.309.229-.642.229-1.193.16-1.309-.068-.115-.251-.183-.526-.32z" fill="#128C7E"/></svg>
+          <span>Entrar no Grupo</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-wrap -->
+
+<footer>
+  <p>Pack de Ferramentas do Nayder &nbsp;·&nbsp; PriceIQ &nbsp;·&nbsp; <a href="index.html" style="color:var(--accent);text-decoration:none;">Voltar para a ferramenta</a></p>
+</footer>
+
+<script>
+// Scroll progress bar
+window.addEventListener('scroll', function() {
+  const doc  = document.documentElement;
+  const body = document.body;
+  const scrollTop  = doc.scrollTop  || body.scrollTop;
+  const scrollHeight = (doc.scrollHeight || body.scrollHeight) - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('scroll-bar').style.width = pct + '%';
+});
+
+// Track section visibility for GA4
+if (typeof gtag !== 'undefined' && typeof IntersectionObserver !== 'undefined') {
+  const sections = document.querySelectorAll('section[aria-labelledby]');
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        gtag('event', 'section_view', { section: e.target.getAttribute('aria-labelledby') });
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(function(s){ observer.observe(s); });
+}
+</script>
+</body>
+</html>

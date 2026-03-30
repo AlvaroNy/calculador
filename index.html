@@ -45,6 +45,26 @@
   .logo span { color:var(--accent); }
   .header-badge { background:var(--accent-glow); border:1px solid rgba(79,138,255,0.3); color:var(--accent); font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; letter-spacing:0.5px; }
   .live-dot { width:7px; height:7px; background:var(--green); border-radius:50%; box-shadow:0 0 0 2px rgba(0,212,170,0.25); animation:pulse-green 2s infinite; }
+  .wa-group-btn {
+    display:inline-flex; align-items:center; gap:7px;
+    background:linear-gradient(135deg,#25D366,#128C7E);
+    color:#fff; font-family:'DM Sans',sans-serif;
+    font-size:12px; font-weight:700; letter-spacing:0.2px;
+    padding:6px 14px; border-radius:20px; border:none;
+    cursor:pointer; text-decoration:none;
+    box-shadow:0 2px 12px rgba(37,211,102,0.35);
+    transition:all 0.2s; white-space:nowrap;
+  }
+  .wa-group-btn:hover {
+    transform:translateY(-1px);
+    box-shadow:0 4px 18px rgba(37,211,102,0.5);
+    background:linear-gradient(135deg,#2de070,#1aab73);
+  }
+  .wa-group-btn svg { flex-shrink:0; }
+  @media(max-width:480px){
+    .wa-group-btn span { display:none; }
+    .wa-group-btn { padding:6px 10px; }
+  }
   @keyframes pulse-green { 0%,100%{ box-shadow:0 0 0 2px rgba(0,212,170,0.25); } 50%{ box-shadow:0 0 0 5px rgba(0,212,170,0.1); } }
 
   .hero { text-align:center; padding:56px 24px 32px; position:relative; z-index:1; }
@@ -365,7 +385,16 @@
   <div class="header-inner">
     <div class="logo"><div class="logo-icon">💰</div>Price<span>IQ</span></div>
     <div class="header-badge">BETA</div>
-    <div class="header-actions"><div class="live-dot" title="Cálculo em tempo real"></div></div>
+    <div class="header-actions" style="display:flex;align-items:center;gap:12px;">
+      <a class="wa-group-btn" href="https://chat.whatsapp.com/DpZLiJzuct14jsR5Bkvt6g" target="_blank" rel="noopener noreferrer" onclick="if(typeof gtag!=='undefined')gtag('event','click_wa_group');">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.978-1.41A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
+          <path d="M17.006 14.57c-.275-.138-1.628-.803-1.88-.895-.25-.092-.433-.138-.615.138-.183.275-.708.895-.868 1.079-.16.183-.32.206-.595.069-.275-.138-1.16-.428-2.21-1.364-.817-.729-1.369-1.629-1.53-1.904-.16-.275-.017-.424.12-.561.124-.123.275-.32.413-.481.138-.16.183-.275.275-.458.092-.184.046-.344-.023-.481-.069-.138-.615-1.483-.843-2.03-.222-.533-.448-.46-.615-.469l-.524-.009c-.183 0-.48.069-.73.344-.252.275-.962.94-.962 2.29 0 1.35.985 2.656 1.123 2.839.138.184 1.938 2.96 4.697 4.15.656.283 1.168.452 1.567.579.658.209 1.258.18 1.731.109.528-.079 1.628-.666 1.857-1.309.229-.642.229-1.193.16-1.309-.068-.115-.251-.183-.526-.32z" fill="#128C7E"/>
+        </svg>
+        <span>Grupo Exclusivo</span>
+      </a>
+      <div class="live-dot" title="Cálculo em tempo real"></div>
+    </div>
   </div>
 </header>
 

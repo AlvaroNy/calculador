@@ -481,6 +481,13 @@
               <div class="input-wrap"><input type="number" id="taxa_gestor" class="no-prefix" value="0" min="0" max="100" step="0.1" oninput="calc()"/><span class="input-suffix">%</span></div>
             </div>
           </div>
+          <!-- CUSTO ADS — shown/hidden by advanced toggle -->
+          <div id="ads-field-calc" class="gestor-field-wrap">
+            <div class="form-group" style="margin-bottom:0;">
+              <div class="form-label" style="color:var(--orange);">Custo Por Venda (ADS) <div class="tooltip" title="Valor fixo em R$ gasto com anúncios por unidade vendida">?</div></div>
+              <div class="input-wrap"><span class="input-prefix">R$</span><input type="number" id="custo_ads" value="0" min="0" step="0.01" oninput="calc()"/></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -513,6 +520,10 @@
             <div class="breakdown-item" id="row-gestor" style="display:none;">
               <span class="bi-label"><span class="bi-dot" style="background:var(--accent2)"></span>Taxa do Gestor</span>
               <span class="bi-value" style="color:var(--accent2)" id="bi-gestor">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item" id="row-ads" style="display:none;">
+              <span class="bi-label"><span class="bi-dot orange"></span>Custo Por Venda (ADS)</span>
+              <span class="bi-value orange" id="bi-ads">−R$ 0,00</span>
             </div>
             <div class="breakdown-item">
               <span class="bi-label"><span class="bi-dot yellow"></span>Impostos</span>
@@ -666,6 +677,26 @@
         <div class="adv-field" style="margin-bottom:0;">
           <label>Percentual padrão da Taxa do Gestor (%)</label>
           <input type="number" id="adv-gestor-pct" value="5" min="0" max="100" step="0.1" oninput="calc()"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTO POR VENDA (ADS) TOGGLE CARD -->
+    <div class="card" style="margin-bottom:16px;padding:20px 24px;">
+      <div class="gestor-toggle-row" id="ads-toggle-row" onclick="toggleADS()">
+        <div class="gestor-toggle-info">
+          <div class="gestor-toggle-title">📣 Custo Por Venda (ADS)</div>
+          <div class="gestor-toggle-sub">Habilita um custo fixo em R$ por venda referente ao investimento em anúncios</div>
+        </div>
+        <label class="switch" onclick="event.stopPropagation()">
+          <input type="checkbox" id="ads-enabled" onchange="toggleADS()"/>
+          <span class="switch-track"></span>
+        </label>
+      </div>
+      <div id="ads-field-adv" style="display:none;margin-top:14px;">
+        <div class="adv-field" style="margin-bottom:0;">
+          <label>Custo padrão de ADS por venda (R$)</label>
+          <input type="number" id="adv-ads-valor" value="5" min="0" step="0.01" oninput="syncADS();calc()"/>
         </div>
       </div>
     </div>
@@ -931,18 +962,19 @@ function getMPFees(mp, price) {
 // FORWARD PRICE CALC
 // Resolve: price*(1 - comPct - aflPct - taxPct - mPct) = custo + fixed
 // ============================
-function calcIdealPrice(mp, custoTotal, margemPct, aliquotaPct, gestorPct) {
+function calcIdealPrice(mp, custoTotal, margemPct, aliquotaPct, gestorPct, adsValor) {
   const taxPct = aliquotaPct / 100;
   const mPct   = margemPct   / 100;
-  const gPct   = (gestorPct  || 0) / 100;
+  const gPct   = (gestorPct || 0) / 100;
+  const ads    = adsValor   || 0;   // fixed R$ cost per sale — added to numerator like fixed fee
 
   if (mp === 'shopee') {
-    let price = custoTotal / Math.max(0.001, 1 - (rates.shopee.tiers[0].com/100) - taxPct - gPct - mPct);
+    let price = (custoTotal + ads) / Math.max(0.001, 1 - (rates.shopee.tiers[0].com/100) - taxPct - gPct - mPct);
     for (let i = 0; i < 25; i++) {
       const tier = getShopeeTier(price);
       const div  = 1 - (tier.com/100) - taxPct - gPct - mPct;
       if (div <= 0) { price = 0; break; }
-      const newPrice = (custoTotal + tier.fixed) / div;
+      const newPrice = (custoTotal + tier.fixed + ads) / div;
       if (Math.abs(newPrice - price) < 0.001) { price = newPrice; break; }
       price = newPrice;
     }
@@ -950,43 +982,43 @@ function calcIdealPrice(mp, custoTotal, margemPct, aliquotaPct, gestorPct) {
     const fees = getMPFees('shopee', price);
     const imp  = price * taxPct;
     const ges  = price * gPct;
-    const rec  = price - fees.com - fees.fixed - imp - ges;
-    return { price, com: fees.com, fixed: fees.fixed, afl: 0, imposto: imp, gestor: ges, receita: rec, lucro: rec - custoTotal };
+    const rec  = price - fees.com - fees.fixed - imp - ges - ads;
+    return { price, com: fees.com, fixed: fees.fixed, afl: 0, imposto: imp, gestor: ges, ads, receita: rec, lucro: rec - custoTotal };
 
   } else if (mp === 'mercadolivre') {
     const div = 1 - (rates.mercadolivre.com/100) - taxPct - gPct - mPct;
     if (div <= 0) return zero();
-    const price = (custoTotal + rates.mercadolivre.fixed) / div;
+    const price = (custoTotal + rates.mercadolivre.fixed + ads) / div;
     const fees  = getMPFees('mercadolivre', price);
     const imp   = price * taxPct;
     const ges   = price * gPct;
-    const rec   = price - fees.com - fees.fixed - imp - ges;
-    return { price, com: fees.com, fixed: fees.fixed, afl: 0, imposto: imp, gestor: ges, receita: rec, lucro: rec - custoTotal };
+    const rec   = price - fees.com - fees.fixed - imp - ges - ads;
+    return { price, com: fees.com, fixed: fees.fixed, afl: 0, imposto: imp, gestor: ges, ads, receita: rec, lucro: rec - custoTotal };
 
   } else if (mp === 'tiktok') {
     const totPct = (rates.tiktok.com + rates.tiktok.afl) / 100;
     const div = 1 - totPct - taxPct - gPct - mPct;
     if (div <= 0) return zero();
-    const price = custoTotal / div;
+    const price = (custoTotal + ads) / div;
     const fees  = getMPFees('tiktok', price);
     const imp   = price * taxPct;
     const ges   = price * gPct;
-    const rec   = price - fees.com - fees.afl - imp - ges;
-    return { price, com: fees.com, fixed: 0, afl: fees.afl, imposto: imp, gestor: ges, receita: rec, lucro: rec - custoTotal };
+    const rec   = price - fees.com - fees.afl - imp - ges - ads;
+    return { price, com: fees.com, fixed: 0, afl: fees.afl, imposto: imp, gestor: ges, ads, receita: rec, lucro: rec - custoTotal };
 
   } else { // shein
     const div = 1 - (rates.shein.com/100) - taxPct - gPct - mPct;
     if (div <= 0) return zero();
-    const price = custoTotal / div;
+    const price = (custoTotal + ads) / div;
     const fees  = getMPFees('shein', price);
     const imp   = price * taxPct;
     const ges   = price * gPct;
-    const rec   = price - fees.com - imp - ges;
-    return { price, com: fees.com, fixed: 0, afl: 0, imposto: imp, gestor: ges, receita: rec, lucro: rec - custoTotal };
+    const rec   = price - fees.com - imp - ges - ads;
+    return { price, com: fees.com, fixed: 0, afl: 0, imposto: imp, gestor: ges, ads, receita: rec, lucro: rec - custoTotal };
   }
 }
 
-function zero() { return { price:0, com:0, fixed:0, afl:0, imposto:0, gestor:0, receita:0, lucro:0 }; }
+function zero() { return { price:0, com:0, fixed:0, afl:0, imposto:0, gestor:0, ads:0, receita:0, lucro:0 }; }
 
 // ============================
 // MAIN CALC
@@ -998,9 +1030,11 @@ function calc() {
   const mg = getVal('margem_lucro');
   const al = getVal('aliquota');
   const gestorEnabled = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
-  const gl = gestorEnabled ? getVal('taxa_gestor') : 0;
-  const r  = calcIdealPrice(currentMP, ct, mg, al, gl);
-  lastResult = { ...r, custoTotal: ct, margem: mg, aliquota: al, gestorPct: gl, mp: currentMP };
+  const gl  = gestorEnabled ? getVal('taxa_gestor') : 0;
+  const adsEnabled = document.getElementById('ads-enabled') && document.getElementById('ads-enabled').checked;
+  const adsVal = adsEnabled ? getVal('custo_ads') : 0;
+  const r  = calcIdealPrice(currentMP, ct, mg, al, gl, adsVal);
+  lastResult = { ...r, custoTotal: ct, margem: mg, aliquota: al, gestorPct: gl, adsVal, mp: currentMP };
 
   setTxt('res-preco', fmt(r.price));
   const badge = document.getElementById('res-lucro-badge');
@@ -1040,6 +1074,15 @@ function calc() {
   } else {
     rowGestor.style.display = 'none';
   }
+  // ads row
+  const rowADS = document.getElementById('row-ads');
+  const adsEnabled2 = document.getElementById('ads-enabled') && document.getElementById('ads-enabled').checked;
+  if (adsEnabled2 && r.ads > 0) {
+    rowADS.style.display = '';
+    setTxt('bi-ads', `−${fmtBRL(r.ads)}`);
+  } else {
+    rowADS.style.display = 'none';
+  }
 
   setTxt('bi-imposto', `−${fmtBRL(r.imposto)}`);
   setTxt('bi-receita', fmtBRL(r.receita));
@@ -1064,11 +1107,13 @@ function calcReverse() {
 
   const gestorEnabledR = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
   const glR  = gestorEnabledR ? getVal('taxa_gestor') : 0;
+  const adsEnabledR = document.getElementById('ads-enabled') && document.getElementById('ads-enabled').checked;
+  const adsR = adsEnabledR ? getVal('custo_ads') : 0;
   const fees   = getMPFees(currentRevMP, price);
   const imp    = price * (al / 100);
   const ges    = price * (glR / 100);
-  const total  = fees.com + fees.fixed + fees.afl + imp + ges;
-  const receita = price - fees.com - fees.fixed - fees.afl - imp - ges;
+  const total  = fees.com + fees.fixed + fees.afl + imp + ges + adsR;
+  const receita = price - fees.com - fees.fixed - fees.afl - imp - ges - adsR;
   const lucro  = receita - ct;
   const margem = price > 0 ? (lucro / price) * 100 : 0;
   const pctTax = price > 0 ? (total / price) * 100 : 0;
@@ -1141,8 +1186,10 @@ function updateComparator() {
 
   const gestorEnabledC = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
   const glC = gestorEnabledC ? getVal('taxa_gestor') : 0;
+  const adsEnabledC = document.getElementById('ads-enabled') && document.getElementById('ads-enabled').checked;
+  const adsC = adsEnabledC ? getVal('custo_ads') : 0;
   const res = {};
-  ['shopee','mercadolivre','tiktok','shein'].forEach(mp => { res[mp] = calcIdealPrice(mp, ct, mg, al, glC); });
+  ['shopee','mercadolivre','tiktok','shein'].forEach(mp => { res[mp] = calcIdealPrice(mp, ct, mg, al, glC, adsC); });
 
   const valid = Object.values(res).map(r => r.price).filter(p => p > 0);
   const minP  = valid.length ? Math.min(...valid) : 0;
@@ -1245,9 +1292,11 @@ function copiarResultado() {
   const mp   = mpInfo[currentMP]?.name || currentMP;
   const nome = (document.getElementById('nome_produto').value || '').trim();
   const gestorOn = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
+  const adsOn    = document.getElementById('ads-enabled') && document.getElementById('ads-enabled').checked;
   const aflLine    = currentMP === 'tiktok' ? '\n📉 Taxa de afiliados: −' + fmtBRL(r.afl) : '';
   const fixLine    = (currentMP !== 'tiktok' && currentMP !== 'shein') ? '\n📉 Taxa fixa: −' + fmtBRL(r.fixed) : '';
   const gestorLine = (gestorOn && r.gestor > 0) ? '\n👤 Taxa do Gestor: −' + fmtBRL(r.gestor) + ' (' + r.gestorPct + '%)' : '';
+  const adsLine    = (adsOn && r.ads > 0) ? '\n📣 Custo ADS: −' + fmtBRL(r.ads) : '';
   const txt =
     icon + ' *' + mp + '*\n' +
     '===============================\n' +
@@ -1258,9 +1307,10 @@ function copiarResultado() {
     '📊 Margem desejada: ' + r.margem + '%\n' +
     '🏦 Alíquota: ' + r.aliquota + '%\n' +
     (gestorOn && r.gestor > 0 ? '👤 Taxa do Gestor: ' + r.gestorPct + '%\n' : '') +
+    (adsOn && r.ads > 0 ? '📣 Custo Por Venda (ADS): ' + fmtBRL(r.ads) + '\n' : '') +
     '-------------------------------\n' +
     '✅ Preço ideal de venda: ' + fmtBRL(r.price) + '\n' +
-    '📉 Comissão: −' + fmtBRL(r.com) + fixLine + aflLine + gestorLine + '\n' +
+    '📉 Comissão: −' + fmtBRL(r.com) + fixLine + aflLine + gestorLine + adsLine + '\n' +
     '📉 Impostos: −' + fmtBRL(r.imposto) + '\n' +
     '📈 Receita líquida: ' + fmtBRL(r.receita) + '\n' +
     '*💰 Lucro líquido: ' + fmtBRL(r.lucro) + '*\n' +
@@ -1286,9 +1336,11 @@ function copiarComparador() {
   const ct       = getVal('custo_produto') + getVal('custo_envio') + getVal('taxas_extras');
   const gestorOn = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
   const gl       = gestorOn ? getVal('taxa_gestor') : 0;
+  const adsOnC   = document.getElementById('ads-enabled') && document.getElementById('ads-enabled').checked;
+  const adsVC    = adsOnC ? getVal('custo_ads') : 0;
   const results  = {};
   ['shopee','mercadolivre','tiktok','shein'].forEach(mp => {
-    results[mp] = calcIdealPrice(mp, ct, margem, aliquota, gl);
+    results[mp] = calcIdealPrice(mp, ct, margem, aliquota, gl, adsVC);
   });
 
   let txt = '📊 *Comparador de Marketplaces*\n';
@@ -1300,6 +1352,7 @@ function copiarComparador() {
   txt += '📈 Previsão de lucro: ' + margem + '%\n';
   txt += '🏦 Imposto: ' + aliquota + '%\n';
   if (gestorOn && gl > 0) txt += '👤 Taxa do Gestor: ' + gl + '%\n';
+  if (adsOnC && adsVC > 0) txt += '📣 Custo Por Venda (ADS): ' + fmtBRL(adsVC) + '\n';
   txt += '-------------------------------\n';
 
   ['shopee','mercadolivre','tiktok','shein'].forEach(mp => {
@@ -1310,6 +1363,7 @@ function copiarComparador() {
     txt += 'Valor de Venda: *' + fmtBRL(r.price) + '*\n';
     txt += 'Previsão de Lucro: *' + fmtBRL(r.lucro) + '* (' + pct + ')\n';
     if (gestorOn && r.gestor > 0) txt += 'Taxa do Gestor: −' + fmtBRL(r.gestor) + '\n';
+    if (adsOnC && r.ads > 0) txt += 'Custo ADS: −' + fmtBRL(r.ads) + '\n';
   });
 
   txt += '===============================\n';
@@ -1334,6 +1388,7 @@ function salvarSimulacao() {
     aliquota: getVal('aliquota'), price: r.price, lucro: r.lucro,
     com: r.com, fixed: r.fixed, afl: r.afl, imposto: r.imposto, receita: r.receita,
     gestor: r.gestor||0, gestorPct: r.gestorPct||0,
+    ads: r.ads||0, adsVal: r.adsVal||0,
   });
   localStorage.setItem('priceiq_saves', JSON.stringify(saved.slice(0,50)));
   updateSavedCount(); showToast('💾 Simulação salva!');
@@ -1346,6 +1401,7 @@ function buildShareText(s) {
   const aflLine    = (s.mp === 'tiktok' && s.afl > 0) ? '\n📉 Taxa de afiliados: −' + fmtBRL(s.afl||0) : '';
   const fixLine    = (s.mp !== 'tiktok' && s.mp !== 'shein') ? '\n📉 Taxa fixa: −' + fmtBRL(s.fixed||0) : '';
   const gestorLine = (s.gestor > 0) ? '\n👤 Taxa do Gestor: −' + fmtBRL(s.gestor) + ' (' + (s.gestorPct||0) + '%)' : '';
+  const adsShareLine = (s.ads > 0) ? '\n📣 Custo ADS: −' + fmtBRL(s.ads) : '';
   return mpIcon + ' *' + mp + '*\n' +
     '===============================\n' +
     (nome ? '📦 Produto: *' + nome + '*\n' : '') +
@@ -1355,9 +1411,10 @@ function buildShareText(s) {
     '📊 Margem desejada: ' + s.margem + '%\n' +
     '🏦 Alíquota: ' + s.aliquota + '%\n' +
     (s.gestor > 0 ? '👤 Taxa do Gestor: ' + (s.gestorPct||0) + '%\n' : '') +
+    (s.ads > 0 ? '📣 Custo Por Venda (ADS): ' + fmtBRL(s.ads) + '\n' : '') +
     '-------------------------------\n' +
     '✅ Preço ideal de venda: ' + fmtBRL(s.price) + '\n' +
-    '📉 Comissão: −' + fmtBRL(s.com||0) + fixLine + aflLine + gestorLine + '\n' +
+    '📉 Comissão: −' + fmtBRL(s.com||0) + fixLine + aflLine + gestorLine + adsShareLine + '\n' +
     '📉 Impostos: −' + fmtBRL(s.imposto||0) + '\n' +
     '📈 Receita líquida: ' + fmtBRL(s.receita||0) + '\n' +
     '*💰 Lucro líquido: ' + fmtBRL(s.lucro) + '*\n' +
@@ -1487,6 +1544,30 @@ function resetAdvanced() {
   sv('adv-shein-com',16);
   document.getElementById('adv-tiktok-total').textContent = '17%';
   updateMPInfo(); calc(); showToast('↺ Taxas restauradas para o padrão');
+}
+
+// ============================
+// CUSTO ADS TOGGLE
+// ============================
+function toggleADS() {
+  const cb       = document.getElementById('ads-enabled');
+  const row      = document.getElementById('ads-toggle-row');
+  const fieldCalc = document.getElementById('ads-field-calc');
+  const fieldAdv  = document.getElementById('ads-field-adv');
+  const on = cb.checked;
+  row.classList.toggle('active', on);
+  if (fieldCalc) fieldCalc.classList.toggle('visible', on);
+  if (fieldAdv)  fieldAdv.style.display = on ? '' : 'none';
+  if (on) {
+    const val = parseFloat(document.getElementById('adv-ads-valor').value) || 0;
+    document.getElementById('custo_ads').value = val;
+  }
+  calc();
+}
+
+function syncADS() {
+  const val = parseFloat(document.getElementById('adv-ads-valor').value) || 0;
+  document.getElementById('custo_ads').value = val;
 }
 
 // ============================

@@ -1,0 +1,17 @@
+{
+  "name": "calculador",
+  "version": "1.0.0",
+  "description": "PriceIQ - Calculadora de Precificação para Marketplaces",
+  "private": true,
+  "scripts": {
+    "dev": "serve .",
+    "build": "echo 'Static site - no build needed'",
+    "lint": "echo 'No linter configured'"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.1.1"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}

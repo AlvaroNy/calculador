@@ -449,6 +449,7 @@
 
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('calculator',this)">⚙️ Calculadora</button>
+    <button class="tab-btn" onclick="switchTab('bruno',this)">🧮 Calc.Bruno</button>
     <button class="tab-btn" onclick="switchTab('comparator',this)">📊 Comparador</button>
     <button class="tab-btn" onclick="switchTab('reverse',this)">↩ Simulação Reversa</button>
     <button class="tab-btn" onclick="switchTab('advanced',this)">🔧 Modo Avançado</button>
@@ -588,6 +589,146 @@
         <div class="action-row">
           <button class="btn btn-primary btn-lg" onclick="copiarResultado()" style="flex:1">📋 Copiar resultado</button>
           <button class="btn btn-outline btn-lg" onclick="salvarSimulacao()" style="flex:1">💾 Salvar simulação</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALC.BRUNO (duplicata da Calculadora, com Lucro Desejado em R$ ou %) -->
+  <div id="tab-bruno" class="tab-content">
+    <div class="main-grid">
+      <div>
+        <div class="card">
+          <div class="card-title">Marketplace</div>
+          <div class="marketplace-grid">
+            <button class="mp-btn active" onclick="selectMPBruno('shopee',this)">
+              <span class="mp-logo">🛍️</span><span>Shopee</span>
+              <span class="mp-rate">20%/14% + taxa fixa</span>
+            </button>
+            <button class="mp-btn" onclick="selectMPBruno('mercadolivre',this)">
+              <span class="mp-logo">🛒</span><span>Mercado Livre</span>
+              <span class="mp-rate">19% + R$6</span>
+            </button>
+            <button class="mp-btn" onclick="selectMPBruno('tiktok',this)">
+              <span class="mp-logo">🎵</span><span>TikTok Shop</span>
+              <span class="mp-rate">12% + 5% afiliados</span>
+            </button>
+            <button class="mp-btn" onclick="selectMPBruno('shein',this)">
+              <span class="mp-logo">👗</span><span>Shein</span>
+              <span class="mp-rate">16%</span>
+            </button>
+          </div>
+          <div id="mp-info-b" style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text3);margin-bottom:20px;line-height:1.6;"></div>
+
+          <div class="card-title">Custos do Produto</div>
+          <div class="form-group">
+            <div class="form-label">Nome do produto <span style="color:var(--text3);font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;margin-left:4px;">opcional</span></div>
+            <div class="input-wrap"><input type="text" id="nome_produto_b" class="no-prefix no-suffix" placeholder="Ex: Camiseta básica branca..." style="padding:11px 14px;"/></div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Custo do produto <div class="tooltip" title="Valor pago pelo produto/fabricação">?</div></div>
+            <div class="input-wrap"><span class="input-prefix">R$</span><input type="number" id="custo_produto_b" value="50" min="0" step="0.01" oninput="calcBruno('pct')"/></div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Custo de envio <div class="tooltip" title="Frete que você paga ao enviar">?</div></div>
+            <div class="input-wrap"><span class="input-prefix">R$</span><input type="number" id="custo_envio_b" value="0" min="0" step="0.01" oninput="calcBruno('pct')"/></div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Taxas extras <div class="tooltip" title="Embalagem, mão de obra, operacionais">?</div></div>
+            <div class="input-wrap"><span class="input-prefix">R$</span><input type="number" id="taxas_extras_b" value="0" min="0" step="0.01" oninput="calcBruno('pct')"/></div>
+          </div>
+          <div class="divider"></div>
+          <div class="form-group">
+            <div class="form-label">Lucro desejado <div class="tooltip" title="Defina o lucro em reais OU em %. Ao preencher um, o outro é calculado automaticamente.">?</div></div>
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+              <div style="flex:1;">
+                <div class="input-wrap"><span class="input-prefix">R$</span><input type="number" id="lucro_real_b" value="0" min="0" step="0.01" oninput="calcBruno('real')"/></div>
+                <div style="font-size:10px;color:var(--text3);margin-top:5px;text-align:center;">Lucro em reais</div>
+              </div>
+              <div style="align-self:center;color:var(--text3);font-size:13px;padding-top:2px;">ou</div>
+              <div style="flex:1;">
+                <div class="input-wrap"><input type="number" id="lucro_pct_b" class="no-prefix" value="20" min="0" step="0.01" oninput="calcBruno('pct')"/><span class="input-suffix">%</span></div>
+                <div style="font-size:10px;color:var(--text3);margin-top:5px;text-align:center;">Margem (%)</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:16px;">
+            <div class="form-label">Alíquota tributária <div class="tooltip" title="% de imposto sobre o valor de venda (Simples ~6%)">?</div></div>
+            <div class="input-wrap"><input type="number" id="aliquota_b" class="no-prefix" value="6" min="0" max="100" step="0.1" oninput="calcBruno('pct')"/><span class="input-suffix">%</span></div>
+          </div>
+          <!-- TAXA GESTOR — shown/hidden by advanced toggle -->
+          <div id="gestor-field-bruno" class="gestor-field-wrap">
+            <div class="form-group" style="margin-bottom:0;">
+              <div class="form-label" style="color:var(--accent2);">Taxa do Gestor <div class="tooltip" title="% cobrado pelo gestor de marketplace sobre o valor de venda">?</div></div>
+              <div class="input-wrap"><input type="number" id="taxa_gestor_b" class="no-prefix" value="0" min="0" max="100" step="0.1" oninput="calcBruno('pct')"/><span class="input-suffix">%</span></div>
+            </div>
+          </div>
+          <!-- CUSTO ADS — shown/hidden by advanced toggle -->
+          <div id="ads-field-bruno" class="gestor-field-wrap">
+            <div class="form-group" style="margin-bottom:0;">
+              <div class="form-label" style="color:var(--orange);">Custo Por Venda (ADS) <div class="tooltip" title="Valor fixo em R$ gasto com anúncios por unidade vendida">?</div></div>
+              <div class="input-wrap"><span class="input-prefix">R$</span><input type="number" id="custo_ads_b" value="0" min="0" step="0.01" oninput="calcBruno('pct')"/></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-panel">
+        <div class="result-hero">
+          <div class="result-hero-label">💡 Preço ideal de venda</div>
+          <div class="result-price"><span class="currency">R$</span><span id="res-preco-b">0,00</span></div>
+          <div class="result-sub">Lucro líquido: <span class="profit-badge" id="res-lucro-badge-b">▲ R$ 0,00</span></div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-title">📋 Detalhamento completo</div>
+          <div class="breakdown-list">
+            <div class="breakdown-item">
+              <span class="bi-label"><span class="bi-dot"></span>Custo total do produto</span>
+              <span class="bi-value neutral" id="bi-custo-b">R$ 0,00</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="bi-label"><span class="bi-dot red"></span>Comissão do marketplace</span>
+              <span class="bi-value neg" id="bi-comissao-b">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item" id="row-taxa-fixa-b">
+              <span class="bi-label"><span class="bi-dot red"></span><span id="label-taxa-fixa-b">Taxa fixa</span></span>
+              <span class="bi-value neg" id="bi-taxa-fixa-b">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item" id="row-afiliados-b" style="display:none;">
+              <span class="bi-label"><span class="bi-dot orange"></span>Taxa de afiliados</span>
+              <span class="bi-value orange" id="bi-afiliados-b">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item" id="row-gestor-b" style="display:none;">
+              <span class="bi-label"><span class="bi-dot" style="background:var(--accent2)"></span>Taxa do Gestor</span>
+              <span class="bi-value" style="color:var(--accent2)" id="bi-gestor-b">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item" id="row-ads-b" style="display:none;">
+              <span class="bi-label"><span class="bi-dot orange"></span>Custo Por Venda (ADS)</span>
+              <span class="bi-value orange" id="bi-ads-b">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="bi-label"><span class="bi-dot yellow"></span>Impostos</span>
+              <span class="bi-value" style="color:var(--yellow)" id="bi-imposto-b">−R$ 0,00</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="bi-label"><span class="bi-dot blue"></span>Receita líquida</span>
+              <span class="bi-value pos" id="bi-receita-b">R$ 0,00</span>
+            </div>
+            <div class="breakdown-item total">
+              <span class="bi-label" style="color:var(--text)">✦ Lucro líquido</span>
+              <span class="bi-value pos" id="bi-lucro-b">R$ 0,00</span>
+            </div>
+          </div>
+          <div class="margin-bar-wrap">
+            <div class="margin-bar-label"><span>Margem efetiva sobre venda</span><span id="margin-pct-b">0%</span></div>
+            <div class="margin-bar"><div class="margin-bar-fill" id="margin-fill-b" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="btn btn-primary btn-lg" onclick="copiarResultadoBruno()" style="flex:1">📋 Copiar resultado</button>
+          <button class="btn btn-outline btn-lg" onclick="salvarSimulacaoBruno()" style="flex:1">💾 Salvar simulação</button>
         </div>
       </div>
     </div>
@@ -1038,6 +1179,7 @@
 // ============================
 let currentMP = 'shopee';
 let currentRevMP = 'shopee';
+let currentMPBruno = 'shopee';
 
 let rates = {
   shopee: {
@@ -1423,6 +1565,7 @@ function switchTab(tab) {
   });
   if (tab === 'comparator') updateComparator();
   if (tab === 'reverse')    calcReverse();
+  if (tab === 'bruno')      calcBruno('pct');
   if (tab === 'saved')      renderSaved();
 }
 
@@ -1704,16 +1847,22 @@ function toggleADS() {
   row.classList.toggle('active', on);
   if (fieldCalc) fieldCalc.classList.toggle('visible', on);
   if (fieldAdv)  fieldAdv.style.display = on ? '' : 'none';
+  const fieldBruno = document.getElementById('ads-field-bruno');
+  if (fieldBruno) fieldBruno.classList.toggle('visible', on);
   if (on) {
     const val = parseFloat(document.getElementById('adv-ads-valor').value) || 0;
     document.getElementById('custo_ads').value = val;
+    document.getElementById('custo_ads_b').value = val;
   }
   calc();
+  calcBruno('pct');
 }
 
 function syncADS() {
   const val = parseFloat(document.getElementById('adv-ads-valor').value) || 0;
   document.getElementById('custo_ads').value = val;
+  document.getElementById('custo_ads_b').value = val;
+  calcBruno('pct');
 }
 
 // ============================
@@ -1728,12 +1877,16 @@ function toggleGestor() {
   row.classList.toggle('active', on);
   if (fieldCalc) fieldCalc.classList.toggle('visible', on);
   if (fieldAdv)  fieldAdv.style.display = on ? '' : 'none';
+  const fieldBruno = document.getElementById('gestor-field-bruno');
+  if (fieldBruno) fieldBruno.classList.toggle('visible', on);
   // Sync taxa_gestor from adv-gestor-pct if field was just shown
   if (on) {
     const pct = parseFloat(document.getElementById('adv-gestor-pct').value) || 0;
     document.getElementById('taxa_gestor').value = pct;
+    document.getElementById('taxa_gestor_b').value = pct;
   }
   calc();
+  calcBruno('pct');
 }
 
 // Sync adv-gestor-pct -> taxa_gestor live
@@ -1742,10 +1895,225 @@ document.addEventListener('DOMContentLoaded', function() {
   if (advPct) {
     advPct.addEventListener('input', function() {
       document.getElementById('taxa_gestor').value = this.value;
+      document.getElementById('taxa_gestor_b').value = this.value;
       calc();
+      calcBruno('pct');
     });
   }
 });
+
+// ============================
+// CALC.BRUNO — duplicata da Calculadora com Lucro Desejado (R$ ou %)
+// ============================
+let lastResultBruno = {};
+
+/** Versão "alvo de lucro": dado um lucro líquido em R$, descobre o preço de venda. */
+function calcIdealPriceFromLucro(mp, custoTotal, lucroReal, aliquotaPct, gestorPct, adsValor) {
+  const taxPct = aliquotaPct / 100;
+  const gPct   = (gestorPct || 0) / 100;
+  const ads    = adsValor || 0;
+  const L      = lucroReal || 0;
+
+  if (mp === 'shopee') {
+    let price = (custoTotal + ads + L) / Math.max(0.001, 1 - (rates.shopee.tiers[0].com/100) - taxPct - gPct);
+    for (let i = 0; i < 25; i++) {
+      const tier = getShopeeTier(price);
+      const div  = 1 - (tier.com/100) - taxPct - gPct;
+      if (div <= 0) { price = 0; break; }
+      const newPrice = (custoTotal + tier.fixed + ads + L) / div;
+      if (Math.abs(newPrice - price) < 0.001) { price = newPrice; break; }
+      price = newPrice;
+    }
+    if (price <= 0) return zero();
+    const fees = getMPFees('shopee', price);
+    const imp = price * taxPct, ges = price * gPct;
+    const rec = price - fees.com - fees.fixed - imp - ges - ads;
+    return { price, com: fees.com, fixed: fees.fixed, afl: 0, imposto: imp, gestor: ges, ads, receita: rec, lucro: rec - custoTotal };
+
+  } else if (mp === 'mercadolivre') {
+    const div = 1 - (rates.mercadolivre.com/100) - taxPct - gPct;
+    if (div <= 0) return zero();
+    const price = (custoTotal + rates.mercadolivre.fixed + ads + L) / div;
+    const fees  = getMPFees('mercadolivre', price);
+    const imp = price * taxPct, ges = price * gPct;
+    const rec = price - fees.com - fees.fixed - imp - ges - ads;
+    return { price, com: fees.com, fixed: fees.fixed, afl: 0, imposto: imp, gestor: ges, ads, receita: rec, lucro: rec - custoTotal };
+
+  } else if (mp === 'tiktok') {
+    const totPct = (rates.tiktok.com + rates.tiktok.afl) / 100;
+    const div = 1 - totPct - taxPct - gPct;
+    if (div <= 0) return zero();
+    const price = (custoTotal + ads + L) / div;
+    const fees  = getMPFees('tiktok', price);
+    const imp = price * taxPct, ges = price * gPct;
+    const rec = price - fees.com - fees.afl - imp - ges - ads;
+    return { price, com: fees.com, fixed: 0, afl: fees.afl, imposto: imp, gestor: ges, ads, receita: rec, lucro: rec - custoTotal };
+
+  } else { // shein
+    const div = 1 - (rates.shein.com/100) - taxPct - gPct;
+    if (div <= 0) return zero();
+    const price = (custoTotal + ads + L) / div;
+    const fees  = getMPFees('shein', price);
+    const imp = price * taxPct, ges = price * gPct;
+    const rec = price - fees.com - imp - ges - ads;
+    return { price, com: fees.com, fixed: 0, afl: 0, imposto: imp, gestor: ges, ads, receita: rec, lucro: rec - custoTotal };
+  }
+}
+
+/** source: 'pct' (usa a % e calcula o R$) ou 'real' (usa o R$ e calcula a %) */
+function calcBruno(source) {
+  source = source || 'pct';
+  const ct = getVal('custo_produto_b') + getVal('custo_envio_b') + getVal('taxas_extras_b');
+  const al = getVal('aliquota_b');
+  const gestorEnabled = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
+  const gl  = gestorEnabled ? getVal('taxa_gestor_b') : 0;
+  const adsEnabled = document.getElementById('ads-enabled') && document.getElementById('ads-enabled').checked;
+  const adsVal = adsEnabled ? getVal('custo_ads_b') : 0;
+
+  let r, mg;
+  if (source === 'real') {
+    const L = getVal('lucro_real_b');
+    r  = calcIdealPriceFromLucro(currentMPBruno, ct, L, al, gl, adsVal);
+    mg = r.price > 0 ? (r.lucro / r.price) * 100 : 0;
+    document.getElementById('lucro_pct_b').value = Math.round(mg * 100) / 100;
+  } else {
+    mg = getVal('lucro_pct_b');
+    r  = calcIdealPrice(currentMPBruno, ct, mg, al, gl, adsVal);
+    document.getElementById('lucro_real_b').value = Math.round(r.lucro * 100) / 100;
+  }
+
+  lastResultBruno = { ...r, custoTotal: ct, margem: mg, aliquota: al, gestorPct: gl, adsVal, mp: currentMPBruno };
+
+  setTxt('res-preco-b', fmt(r.price));
+  const badge = document.getElementById('res-lucro-badge-b');
+  badge.textContent       = r.lucro >= 0 ? `▲ ${fmtBRL(r.lucro)}` : `▼ ${fmtBRL(Math.abs(r.lucro))}`;
+  badge.style.background   = r.lucro >= 0 ? 'rgba(0,212,170,0.12)' : 'rgba(255,84,112,0.12)';
+  badge.style.borderColor  = r.lucro >= 0 ? 'rgba(0,212,170,0.3)'  : 'rgba(255,84,112,0.3)';
+  badge.style.color        = r.lucro >= 0 ? 'var(--green)'         : 'var(--red)';
+
+  setTxt('bi-custo-b', fmtBRL(ct));
+  setTxt('bi-comissao-b', `−${fmtBRL(r.com)}`);
+
+  const rowTaxa = document.getElementById('row-taxa-fixa-b');
+  if (currentMPBruno === 'tiktok' || currentMPBruno === 'shein') {
+    rowTaxa.style.display = 'none';
+  } else {
+    rowTaxa.style.display = '';
+    setTxt('label-taxa-fixa-b', currentMPBruno === 'shopee' ? 'Taxa fixa (por faixa)' : 'Taxa fixa');
+    setTxt('bi-taxa-fixa-b', `−${fmtBRL(r.fixed)}`);
+  }
+
+  const rowAfl = document.getElementById('row-afiliados-b');
+  if (currentMPBruno === 'tiktok') {
+    rowAfl.style.display = '';
+    setTxt('bi-afiliados-b', `−${fmtBRL(r.afl)}`);
+  } else {
+    rowAfl.style.display = 'none';
+  }
+
+  const rowGestor = document.getElementById('row-gestor-b');
+  if (gestorEnabled && r.gestor > 0) {
+    rowGestor.style.display = '';
+    setTxt('bi-gestor-b', `−${fmtBRL(r.gestor)}`);
+  } else {
+    rowGestor.style.display = 'none';
+  }
+
+  const rowADS = document.getElementById('row-ads-b');
+  if (adsEnabled && r.ads > 0) {
+    rowADS.style.display = '';
+    setTxt('bi-ads-b', `−${fmtBRL(r.ads)}`);
+  } else {
+    rowADS.style.display = 'none';
+  }
+
+  setTxt('bi-imposto-b', `−${fmtBRL(r.imposto)}`);
+  setTxt('bi-receita-b', fmtBRL(r.receita));
+  const le = document.getElementById('bi-lucro-b');
+  le.textContent = fmtBRL(r.lucro);
+  le.className   = `bi-value ${r.lucro >= 0 ? 'pos' : 'neg'}`;
+
+  const eff = r.price > 0 ? (r.lucro / r.price) * 100 : 0;
+  setTxt('margin-pct-b', fmtPct(eff));
+  document.getElementById('margin-fill-b').style.width = Math.max(0, Math.min(100, eff)) + '%';
+}
+
+function selectMPBruno(mp, btn) {
+  currentMPBruno = mp;
+  document.querySelectorAll('#tab-bruno .mp-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateMPInfoBruno(); calcBruno('pct');
+}
+
+function updateMPInfoBruno() {
+  const s = rates.shopee.tiers;
+  const infoMap = {
+    shopee: '<strong style="color:var(--shopee)">Shopee</strong> — ' +
+      '<span style="opacity:.8">até R$79,99:</span> <b>' + s[0].com + '% + R$' + fmt(s[0].fixed) + '</b> &nbsp;|&nbsp; ' +
+      '<span style="opacity:.8">R$80–99,99:</span> <b>' + s[1].com + '% + R$' + fmt(s[1].fixed) + '</b> &nbsp;|&nbsp; ' +
+      '<span style="opacity:.8">R$100–199,99:</span> <b>' + s[2].com + '% + R$' + fmt(s[2].fixed) + '</b> &nbsp;|&nbsp; ' +
+      '<span style="opacity:.8">R$200–499,99:</span> <b>' + s[3].com + '% + R$' + fmt(s[3].fixed) + '</b> &nbsp;|&nbsp; ' +
+      '<span style="opacity:.8">+R$500:</span> <b>' + s[4].com + '% + R$' + fmt(s[4].fixed) + '</b>',
+    mercadolivre: `<strong style="color:#e8b600">Mercado Livre</strong> — Comissão de ${rates.mercadolivre.com}% + taxa fixa de ${fmtBRL(rates.mercadolivre.fixed)}`,
+    tiktok: `<strong style="color:var(--tiktok)">TikTok Shop</strong> — Comissão de ${rates.tiktok.com}% + taxa de afiliados de ${rates.tiktok.afl}% = <strong style="color:var(--tiktok)">${rates.tiktok.com + rates.tiktok.afl}% total</strong>`,
+    shein: `<strong style="color:var(--text2)">Shein</strong> — Apenas comissão de ${rates.shein.com}%, sem taxa fixa`
+  };
+  document.getElementById('mp-info-b').innerHTML = infoMap[currentMPBruno];
+}
+
+function copiarResultadoBruno() {
+  if (typeof gtag !== 'undefined') gtag('event', 'copy_result', { marketplace: currentMPBruno, source: 'bruno' });
+  const r    = lastResultBruno;
+  const icon = mpInfo[currentMPBruno]?.icon || '';
+  const mp   = mpInfo[currentMPBruno]?.name || currentMPBruno;
+  const nome = (document.getElementById('nome_produto_b').value || '').trim();
+  const gestorOn = document.getElementById('gestor-enabled') && document.getElementById('gestor-enabled').checked;
+  const adsOn    = document.getElementById('ads-enabled') && document.getElementById('ads-enabled').checked;
+  const aflLine    = currentMPBruno === 'tiktok' ? '\n📉 Taxa de afiliados: −' + fmtBRL(r.afl) : '';
+  const fixLine    = (currentMPBruno !== 'tiktok' && currentMPBruno !== 'shein') ? '\n📉 Taxa fixa: −' + fmtBRL(r.fixed) : '';
+  const gestorLine = (gestorOn && r.gestor > 0) ? '\n👤 Taxa do Gestor: −' + fmtBRL(r.gestor) + ' (' + r.gestorPct + '%)' : '';
+  const adsLine    = (adsOn && r.ads > 0) ? '\n📣 Custo ADS: −' + fmtBRL(r.ads) : '';
+  const txt =
+    icon + ' *' + mp + '*\n' +
+    '===============================\n' +
+    (nome ? '📦 Produto: *' + nome + '*\n' : '') +
+    '*💸 Custo do produto: ' + fmtBRL(getVal('custo_produto_b')) + '*\n' +
+    (getVal('custo_envio_b')  ? '📦 Custo de envio: '  + fmtBRL(getVal('custo_envio_b'))  + '\n' : '') +
+    (getVal('taxas_extras_b') ? '➕ Taxas extras: '    + fmtBRL(getVal('taxas_extras_b')) + '\n' : '') +
+    '📊 Lucro desejado: ' + fmtBRL(getVal('lucro_real_b')) + ' (' + r.margem.toFixed(2).replace('.',',') + '%)\n' +
+    '🏦 Alíquota: ' + r.aliquota + '%\n' +
+    (gestorOn && r.gestor > 0 ? '👤 Taxa do Gestor: ' + r.gestorPct + '%\n' : '') +
+    (adsOn && r.ads > 0 ? '📣 Custo Por Venda (ADS): ' + fmtBRL(r.ads) + '\n' : '') +
+    '-------------------------------\n' +
+    '✅ Preço ideal de venda: ' + fmtBRL(r.price) + '\n' +
+    '📉 Comissão: −' + fmtBRL(r.com) + fixLine + aflLine + gestorLine + adsLine + '\n' +
+    '📉 Impostos: −' + fmtBRL(r.imposto) + '\n' +
+    '📈 Receita líquida: ' + fmtBRL(r.receita) + '\n' +
+    '*💰 Lucro líquido: ' + fmtBRL(r.lucro) + '*\n' +
+    '===============================\n' +
+    'Pack de Ferramentas do Nayder';
+  copyToClipboard(txt, '📋 Resultado copiado!');
+}
+
+function salvarSimulacaoBruno() {
+  if (typeof gtag !== 'undefined') gtag('event', 'save_simulation', { marketplace: currentMPBruno, source: 'bruno' });
+  const saved = JSON.parse(localStorage.getItem('priceiq_saves')||'[]');
+  const r = lastResultBruno;
+  const nome = (document.getElementById('nome_produto_b').value || '').trim();
+  saved.unshift({
+    id: Date.now(), date: new Date().toLocaleDateString('pt-BR'),
+    mp: currentMPBruno, mpName: mpInfo[currentMPBruno]?.name || currentMPBruno,
+    nome: nome,
+    custo: getVal('custo_produto_b'), envio: getVal('custo_envio_b'),
+    extras: getVal('taxas_extras_b'), margem: Math.round((r.margem||0) * 100) / 100,
+    aliquota: getVal('aliquota_b'), price: r.price, lucro: r.lucro,
+    com: r.com, fixed: r.fixed, afl: r.afl, imposto: r.imposto, receita: r.receita,
+    gestor: r.gestor||0, gestorPct: r.gestorPct||0,
+    ads: r.ads||0, adsVal: r.adsVal||0,
+  });
+  localStorage.setItem('priceiq_saves', JSON.stringify(saved.slice(0,50)));
+  updateSavedCount(); showToast('💾 Simulação salva!');
+}
 
 // ============================
 // INIT
@@ -1753,6 +2121,8 @@ document.addEventListener('DOMContentLoaded', function() {
 updateMPInfo();
 calc();
 calcReverse();
+updateMPInfoBruno();
+calcBruno('pct');
 updateSavedCount();
 
 // ============================
